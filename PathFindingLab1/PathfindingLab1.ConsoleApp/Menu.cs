@@ -4,6 +4,10 @@ namespace PathfindingLab1.ConsoleApp;
 
 public static class Menu
 {
+    public static int GetPointNumber(int x, int y, int width)
+    {
+        return y * width + x;
+    }
     public static void ShowMenu()
     {
         var filePath = ConsoleReader.ReadFilePath();
@@ -21,7 +25,7 @@ public static class Menu
         var fieldWidth = fileLines[0].Length;
         ValuesValidator.FieldWidthIsValid(fieldWidth);
 
-        var adjacencyMatrix = new int[fieldWidth, fieldHeight];
+        var adjacencyMatrix = new int[fieldHeight * fieldWidth, fieldHeight * fieldWidth];
         var fieldMatrix = new int[fieldWidth, fieldHeight];
         
         var startPoint = ConsoleReader.ReadStartPointCoordinates();
@@ -62,11 +66,52 @@ public static class Menu
             Console.WriteLine();
         }
 
-        for(var i = 0; i < fieldMatrix.GetLength(0); i++)
+        for(var i = 0; i < fieldHeight; i++)
         {
-            for (var j = 0; j < fieldMatrix.GetLength(1); j++)
+            for (var j = 0; j < fieldWidth; j++)
             {
                 Console.Write($"{fieldMatrix[i, j]} ");
+                if (fieldMatrix[i, j] == 0)
+                {
+                    if (i > 0)
+                    {
+                        if (fieldMatrix[i - 1, j] == 0)
+                        {
+                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i - 1, fieldWidth)] = 1;
+                        }
+                    }
+                    if (i < fieldHeight - 1)
+                    {
+                        if (fieldMatrix[i + 1, j] == 0)
+                        {
+                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i + 1, fieldWidth)] = 1;
+                        }
+                    }
+                    if (j > 0)
+                    {
+                        if (fieldMatrix[i, j - 1] == 0)
+                        {
+                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i, fieldWidth)] = 1;
+                        }
+                    }
+                    if (j < fieldWidth - 1)
+                    {
+                        if (fieldMatrix[i, j + 1] == 0)
+                        {
+                            Console.WriteLine(GetPointNumber(j + 1, i, fieldWidth));
+                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i, fieldWidth)] = 1;
+                        }
+                    }
+                }
+            }
+            Console.WriteLine();
+        }
+
+        for (var i = 0; i < adjacencyMatrix.GetLength(0); i++)
+        {
+            for (var j = 0; j < adjacencyMatrix.GetLength(1); j++)
+            {
+                Console.Write($"{adjacencyMatrix[i, j]} ");
             }
             Console.WriteLine();
         }
