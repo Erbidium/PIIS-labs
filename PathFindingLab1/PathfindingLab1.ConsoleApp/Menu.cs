@@ -1,4 +1,5 @@
-﻿using PathfindingLab1.ConsoleApp.Exceptions;
+﻿using PathFindingLab1.BLL;
+using PathfindingLab1.ConsoleApp.Exceptions;
 using PathfindingLab1.ConsoleApp.Helpers;
 
 namespace PathfindingLab1.ConsoleApp;
@@ -135,5 +136,14 @@ public static class Menu
             }
             Console.WriteLine();
         }
+
+        var AStarAlgorithm = new AStarAlgorithm();
+
+        foreach (var point in AStarAlgorithm.GetPath(adjacencyMatrix, fieldMatrix, GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth)))
+        {
+            Console.WriteLine(point);
+        }
+        
+        //cout<<"Fail! Way is not found!"<<endl;
     }
 }
