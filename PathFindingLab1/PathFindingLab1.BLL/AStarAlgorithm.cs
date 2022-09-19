@@ -43,7 +43,6 @@ public class AStarAlgorithm
 
             for (var i = 0; i < numberOfPoints; i++)
             {
-                var res = adjacencyMatrix[current, i] != 0;
                 if (adjacencyMatrix[current, i] != 0 && isOpen[i] && g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1), fieldMatrix.GetLength(0)) < g[i])
                 {
                     from[i] = current;

@@ -144,6 +144,14 @@ public static class Menu
             Console.WriteLine(point);
         }
         
+        var LeeAlgo = new LeeAlgorithm();
+
+        Console.WriteLine();
+        foreach (var point in LeeAlgo.GetPath(adjacencyMatrix, fieldMatrix, GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth)))
+        {
+            Console.WriteLine(point);
+        }
+        
         //cout<<"Fail! Way is not found!"<<endl;
     }
 }
