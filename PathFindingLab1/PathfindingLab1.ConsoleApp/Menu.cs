@@ -71,37 +71,23 @@ public static class Menu
             for (var j = 0; j < fieldWidth; j++)
             {
                 Console.Write($"{fieldMatrix[i, j]} ");
-                if (fieldMatrix[i, j] == 0)
+                if (fieldMatrix[i, j] != 0) continue;
+
+                if (i > 0 && fieldMatrix[i - 1, j] == 0)
                 {
-                    if (i > 0)
-                    {
-                        if (fieldMatrix[i - 1, j] == 0)
-                        {
-                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i - 1, fieldWidth)] = 1;
-                        }
-                    }
-                    if (i < fieldHeight - 1)
-                    {
-                        if (fieldMatrix[i + 1, j] == 0)
-                        {
-                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i + 1, fieldWidth)] = 1;
-                        }
-                    }
-                    if (j > 0)
-                    {
-                        if (fieldMatrix[i, j - 1] == 0)
-                        {
-                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i, fieldWidth)] = 1;
-                        }
-                    }
-                    if (j < fieldWidth - 1)
-                    {
-                        if (fieldMatrix[i, j + 1] == 0)
-                        {
-                            Console.WriteLine(GetPointNumber(j + 1, i, fieldWidth));
-                            adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i, fieldWidth)] = 1;
-                        }
-                    }
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i - 1, fieldWidth)] = 1;
+                }
+                if (i < fieldHeight - 1 && fieldMatrix[i + 1, j] == 0)
+                {
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i + 1, fieldWidth)] = 1;
+                }
+                if (j > 0 && fieldMatrix[i, j - 1] == 0)
+                {
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i, fieldWidth)] = 1;
+                }
+                if (j < fieldWidth - 1 && fieldMatrix[i, j + 1] == 0)
+                {
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i, fieldWidth)] = 1;
                 }
             }
             Console.WriteLine();
