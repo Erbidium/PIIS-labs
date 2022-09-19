@@ -1,4 +1,5 @@
 ﻿using PathfindingLab1.ConsoleApp.Exceptions;
+using PathfindingLab1.ConsoleApp.Helpers;
 
 namespace PathfindingLab1.ConsoleApp;
 
@@ -73,22 +74,47 @@ public static class Menu
                 Console.Write($"{fieldMatrix[i, j]} ");
                 if (fieldMatrix[i, j] != 0) continue;
 
-                if (i > 0 && fieldMatrix[i - 1, j] == 0)
+                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix))
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i - 1, fieldWidth)] = 1;
                 }
-                if (i < fieldHeight - 1 && fieldMatrix[i + 1, j] == 0)
+                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight))
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i + 1, fieldWidth)] = 1;
                 }
-                if (j > 0 && fieldMatrix[i, j - 1] == 0)
+                if (FieldMatrixHelpers.LeftNeighboringCellIsFree(i ,j, fieldMatrix))
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i, fieldWidth)] = 1;
                 }
-                if (j < fieldWidth - 1 && fieldMatrix[i, j + 1] == 0)
+                if (FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth))
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i, fieldWidth)] = 1;
                 }
+                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix) &&
+                    FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth) &&
+                    fieldMatrix[i - 1, j + 1] == 0)
+                {
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i - 1, fieldWidth)] = 1;
+                }
+                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix) &&
+                    FieldMatrixHelpers.LeftNeighboringCellIsFree(i, j, fieldMatrix) &&
+                    fieldMatrix[i - 1, j - 1] == 0)
+                {
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i - 1, fieldWidth)] = 1;
+                }
+                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight) &&
+                    FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth) &&
+                    fieldMatrix[i + 1, j + 1] == 0)
+                {
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i + 1, fieldWidth)] = 1;
+                }
+                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight) &&
+                    FieldMatrixHelpers.LeftNeighboringCellIsFree(i, j, fieldMatrix) &&
+                    fieldMatrix[i + 1, j - 1] == 0)
+                {
+                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i + 1, fieldWidth)] = 1;
+                }
+                
             }
             Console.WriteLine();
         }
