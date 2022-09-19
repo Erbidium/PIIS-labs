@@ -47,6 +47,14 @@ public static class Menu
         {
             throw new ValidationException("Start cannot be same as end");
         }
+        if (fieldMatrix[startPoint.Value.Item2, startPoint.Value.Item1] == 1)
+        {
+            throw new ValidationException("Start is not free");
+        }
+        if (fieldMatrix[endPoint.Value.Item2, endPoint.Value.Item1] == 1)
+        {
+            throw new ValidationException("End is not free");
+        }
 
         for(var i = 0; i < fileLines.Count; i++)
         {
