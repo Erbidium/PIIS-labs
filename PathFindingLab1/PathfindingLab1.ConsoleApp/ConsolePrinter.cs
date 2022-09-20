@@ -27,15 +27,21 @@ public static class ConsolePrinter
                 var point = FieldService.GetPointNumber(j, i, fieldMatrix.GetLength(1));
                 if (point == start)
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("S ");
+                    Console.ResetColor();
                 }
                 else if (point == end)
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("E ");
+                    Console.ResetColor();
                 }
                 else if (pathPoints.Contains(point))
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("x ");
+                    Console.ResetColor();
                 }
                 else if (fieldMatrix[i, j] == 0)
                 {
