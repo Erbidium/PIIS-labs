@@ -73,7 +73,7 @@ public static class Menu
 
         var pathFindingService = new PathFindingService();
 
-        var aStarPath = pathFindingService.AStarAlgorithm(adjacencyMatrix, fieldMatrix,
+        var (aStarPathFrom, aStarPathLength) = pathFindingService.AStarAlgorithm(adjacencyMatrix, fieldMatrix,
             FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth),
             FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth));
         var leePath = pathFindingService.LeeAlgorithm(adjacencyMatrix, fieldMatrix,
@@ -86,16 +86,19 @@ public static class Menu
         }
         else
         {
+            Console.WriteLine("Lee algorithm");
             ConsolePrinter.PrintAlgorithmResults(leePath, FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth), fieldMatrix);
         }
         Console.WriteLine();
-        if (aStarPath.Length == 0)
+        if (aStarPathFrom.Length == 0)
         {
             Console.WriteLine("Fail! AStar algorithm cannot find path!");
         }
         else
         {
-            ConsolePrinter.PrintAlgorithmResults(aStarPath, FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth), fieldMatrix);
+            Console.WriteLine("AStar algorithm");
+            Console.WriteLine($"Path length: {aStarPathLength}");
+            ConsolePrinter.PrintAlgorithmResults(aStarPathFrom, FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth), fieldMatrix);
         }
     }
 }

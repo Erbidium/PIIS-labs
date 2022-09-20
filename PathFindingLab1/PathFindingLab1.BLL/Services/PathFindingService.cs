@@ -18,7 +18,7 @@ public class PathFindingService
         return firstX == firstY || secondX == secondY ? 10 : 14;
     }
     
-    public int[] AStarAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
+    public (int[], int) AStarAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
     {
         var numberOfPoints = adjacencyMatrix.GetLength(0);
         var open = new PriorityQueue<int, int>();
@@ -37,7 +37,7 @@ public class PathFindingService
             isOpen[current] = false;
             if (current == end)
             {
-                return from;
+                return (from, g[end]);
             }
 
             for (var i = 0; i < numberOfPoints; i++)
@@ -52,7 +52,7 @@ public class PathFindingService
             }
         }
 
-        return Array.Empty<int>();
+        return (Array.Empty<int>(), 0);
     }
     
     public int[] LeeAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
