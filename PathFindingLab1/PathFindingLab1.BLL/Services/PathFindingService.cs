@@ -11,11 +11,9 @@ public class PathFindingService
     
     private int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width)
     {
-        var firstX = firstPointNumber % width;
-        var firstY = firstPointNumber / width;
-        var secondX = secondPointNumber % width;
-        var secondY = secondPointNumber / width;
-        return firstX == firstY || secondX == secondY ? 10 : 14;
+        var (firstX, firstY) = FieldService.GetPointCoordinates(firstPointNumber, width);
+        var (secondX, secondY) = FieldService.GetPointCoordinates(secondPointNumber, width);
+        return firstX == secondX || firstY == secondY ? 10 : 14;
     }
     
     public (int[], int) AStarAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
@@ -55,7 +53,7 @@ public class PathFindingService
         return (Array.Empty<int>(), 0);
     }
     
-    public int[] LeeAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
+    public (int[], int) LeeAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
     {
         var numberOfPoints = adjacencyMatrix.GetLength(0);
         var queue = new Queue<int>();
@@ -64,13 +62,14 @@ public class PathFindingService
         var distances = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
 
         visited[start] = true;
+        distances[start] = 0;
         queue.Enqueue(start);
         while (queue.Count != 0)
         {
             var current = queue.Dequeue();
             if (current == end)
             {
-                return from;
+                return (from, distances[end]);
             }
             for (var i = 0; i < numberOfPoints; i++)
             {
@@ -78,11 +77,12 @@ public class PathFindingService
                 {
                     queue.Enqueue(i);
                     from[i] = current;
+                    distances[i] = distances[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
                     visited[i] = true;
                 }
             }
         }
 
-        return Array.Empty<int>();
+        return (Array.Empty<int>(), 0);
     }
 }
