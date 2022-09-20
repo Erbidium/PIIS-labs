@@ -22,7 +22,7 @@ public static class Menu
         var fieldWidth = fileLines[0].Length;
         ValuesValidator.FieldWidthIsValid(fieldWidth);
 
-        var fieldMatrix = new int[fieldWidth, fieldHeight];
+        var fieldMatrix = new int[fieldHeight, fieldWidth];
         
         var startPoint = ConsoleReader.ReadStartPointCoordinates();
         if (startPoint is null)
