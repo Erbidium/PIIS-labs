@@ -1,7 +1,5 @@
-﻿using PathFindingLab1.BLL;
-using PathFindingLab1.BLL.Services;
+﻿using PathFindingLab1.BLL.Services;
 using PathfindingLab1.ConsoleApp.Exceptions;
-using PathfindingLab1.ConsoleApp.Helpers;
 
 namespace PathfindingLab1.ConsoleApp;
 
@@ -69,7 +67,6 @@ public static class Menu
 
                 fieldMatrix[i, j] = pointValue;
             }
-            Console.WriteLine();
         }
 
         var adjacencyMatrix = FieldService.GetAdjacencyMatrix(fieldMatrix);
@@ -89,10 +86,7 @@ public static class Menu
         }
         else
         {
-            foreach (var point in leePath)
-            {
-                Console.WriteLine(point);
-            }
+            ConsolePrinter.PrintAlgorithmResults(leePath, FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth), fieldMatrix);
         }
         Console.WriteLine();
         if (aStarPath.Length == 0)
@@ -101,10 +95,7 @@ public static class Menu
         }
         else
         {
-            foreach (var point in aStarPath)
-            {
-                Console.WriteLine(point);
-            }
+            ConsolePrinter.PrintAlgorithmResults(aStarPath, FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth), fieldMatrix);
         }
     }
 }

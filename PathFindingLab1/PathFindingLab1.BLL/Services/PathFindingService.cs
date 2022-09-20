@@ -2,16 +2,14 @@
 
 public class PathFindingService
 {
-    private int h(int currentPointNumber, int endPointNumber, int width, int height)
+    private static int HeuristicValue(int currentPointNumber, int endPointNumber, int width)
     {
-        var currentX = currentPointNumber % width;
-        var currentY = currentPointNumber / width;
-        var endX = currentPointNumber % width;
-        var endY = endPointNumber / width;
+        var (currentX, currentY) = FieldService.GetPointCoordinates(currentPointNumber, width);
+        var (endX, endY) = FieldService.GetPointCoordinates(endPointNumber, width);
         return Math.Abs(currentX - endX) + Math.Abs(currentY - endY);
     }
     
-    private int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width, int height)
+    private int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width)
     {
         var firstX = firstPointNumber % width;
         var firstY = firstPointNumber / width;
@@ -29,7 +27,7 @@ public class PathFindingService
         var f = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
         var isOpen = Enumerable.Repeat(true, numberOfPoints).ToArray();
         g[start] = 0;
-        f[start] = g[start] + h(start, end, fieldMatrix.GetLength(1), fieldMatrix.GetLength(0));
+        f[start] = g[start] + HeuristicValue(start, end, fieldMatrix.GetLength(1));
         open.Enqueue(start, -f[start]);
         while (open.Count != 0)
         {
@@ -44,11 +42,11 @@ public class PathFindingService
 
             for (var i = 0; i < numberOfPoints; i++)
             {
-                if (adjacencyMatrix[current, i] != 0 && isOpen[i] && g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1), fieldMatrix.GetLength(0)) < g[i])
+                if (adjacencyMatrix[current, i] != 0 && isOpen[i] && g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1)) < g[i])
                 {
                     from[i] = current;
-                    g[i] = g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1), fieldMatrix.GetLength(0));
-                    f[i] = g[i] + h(i, end, fieldMatrix.GetLength(1), fieldMatrix.GetLength(0));
+                    g[i] = g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
+                    f[i] = g[i] + HeuristicValue(i, end, fieldMatrix.GetLength(1));
                     open.Enqueue(i, -f[i]);
                 }
             }

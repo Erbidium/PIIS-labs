@@ -9,6 +9,8 @@ public class FieldService
         return y * width + x;
     }
 
+    public static (int, int) GetPointCoordinates(int pointNumber, int width) => (pointNumber % width, pointNumber / width);
+
     public static int[,] GetAdjacencyMatrix(int[,] fieldMatrix)
     {
         var fieldHeight = fieldMatrix.GetLength(0);
