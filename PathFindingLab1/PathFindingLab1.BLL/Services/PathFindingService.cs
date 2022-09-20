@@ -26,7 +26,7 @@ public class PathFindingService
         var isOpen = Enumerable.Repeat(true, numberOfPoints).ToArray();
         g[start] = 0;
         f[start] = g[start] + HeuristicValue(start, end, fieldMatrix.GetLength(1));
-        open.Enqueue(start, -f[start]);
+        open.Enqueue(start, f[start]);
         while (open.Count != 0)
         {
             var current = open.Dequeue();
@@ -45,7 +45,7 @@ public class PathFindingService
                     from[i] = current;
                     g[i] = g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
                     f[i] = g[i] + HeuristicValue(i, end, fieldMatrix.GetLength(1));
-                    open.Enqueue(i, -f[i]);
+                    open.Enqueue(i, f[i]);
                 }
             }
         }
