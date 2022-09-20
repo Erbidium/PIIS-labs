@@ -8,24 +8,17 @@ public class PathFindingService
         var (endX, endY) = FieldService.GetPointCoordinates(endPointNumber, width);
         return Math.Abs(currentX - endX) + Math.Abs(currentY - endY);
     }
-    
-    private int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width)
-    {
-        var (firstX, firstY) = FieldService.GetPointCoordinates(firstPointNumber, width);
-        var (secondX, secondY) = FieldService.GetPointCoordinates(secondPointNumber, width);
-        return firstX == secondX || firstY == secondY ? 10 : 14;
-    }
-    
+
     public (int[], int) AStarAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
     {
         var numberOfPoints = adjacencyMatrix.GetLength(0);
         var open = new PriorityQueue<int, int>();
         var from = Enumerable.Repeat(-1, numberOfPoints).ToArray();
-        var g = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
+        var distances = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
         var f = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
         var isOpen = Enumerable.Repeat(true, numberOfPoints).ToArray();
-        g[start] = 0;
-        f[start] = g[start] + HeuristicValue(start, end, fieldMatrix.GetLength(1));
+        distances[start] = 0;
+        f[start] = distances[start] + HeuristicValue(start, end, fieldMatrix.GetLength(1));
         open.Enqueue(start, f[start]);
         while (open.Count != 0)
         {
@@ -35,16 +28,16 @@ public class PathFindingService
             isOpen[current] = false;
             if (current == end)
             {
-                return (from, g[end]);
+                return (from, distances[end]);
             }
 
             for (var i = 0; i < numberOfPoints; i++)
             {
-                if (adjacencyMatrix[current, i] != 0 && isOpen[i] && g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1)) < g[i])
+                if (adjacencyMatrix[current, i] != 0 && isOpen[i] && distances[current] + FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1)) < distances[i])
                 {
                     from[i] = current;
-                    g[i] = g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
-                    f[i] = g[i] + HeuristicValue(i, end, fieldMatrix.GetLength(1));
+                    distances[i] = distances[current] + FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
+                    f[i] = distances[i] + HeuristicValue(i, end, fieldMatrix.GetLength(1));
                     open.Enqueue(i, f[i]);
                 }
             }
@@ -77,7 +70,7 @@ public class PathFindingService
                 {
                     queue.Enqueue(i);
                     from[i] = current;
-                    distances[i] = distances[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
+                    distances[i] = distances[current] + FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
                     visited[i] = true;
                 }
             }

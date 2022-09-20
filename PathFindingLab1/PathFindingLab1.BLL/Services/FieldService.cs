@@ -2,7 +2,7 @@
 
 namespace PathFindingLab1.BLL.Services;
 
-public class FieldService
+public static class FieldService
 {
     public static int GetPointNumber(int x, int y, int width)
     {
@@ -67,5 +67,12 @@ public class FieldService
         }
 
         return adjacencyMatrix;
+    }
+
+    public static int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width)
+    {
+        var (firstX, firstY) = FieldService.GetPointCoordinates(firstPointNumber, width);
+        var (secondX, secondY) = FieldService.GetPointCoordinates(secondPointNumber, width);
+        return firstX == secondX || firstY == secondY ? 10 : 14;
     }
 }
