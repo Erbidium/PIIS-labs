@@ -1,4 +1,5 @@
 ﻿using PathFindingLab1.BLL;
+using PathFindingLab1.BLL.Services;
 using PathfindingLab1.ConsoleApp.Exceptions;
 using PathfindingLab1.ConsoleApp.Helpers;
 
@@ -6,10 +7,6 @@ namespace PathfindingLab1.ConsoleApp;
 
 public static class Menu
 {
-    public static int GetPointNumber(int x, int y, int width)
-    {
-        return y * width + x;
-    }
     public static void ShowMenu()
     {
         var filePath = ConsoleReader.ReadFilePath();
@@ -27,7 +24,6 @@ public static class Menu
         var fieldWidth = fileLines[0].Length;
         ValuesValidator.FieldWidthIsValid(fieldWidth);
 
-        var adjacencyMatrix = new int[fieldHeight * fieldWidth, fieldHeight * fieldWidth];
         var fieldMatrix = new int[fieldWidth, fieldHeight];
         
         var startPoint = ConsoleReader.ReadStartPointCoordinates();
@@ -36,14 +32,14 @@ public static class Menu
             throw new WrongInputException();
         }
         ValuesValidator.PointIsValid(startPoint.Value, fieldMatrix);
-        Console.WriteLine($"Start point x: {startPoint.Value.Item1} y: {startPoint.Value.Item2}");
+
         var endPoint = ConsoleReader.ReadEndPointCoordinates();
         if (endPoint is null)
         {
             throw new WrongInputException();
         }
         ValuesValidator.PointIsValid(endPoint.Value, fieldMatrix);
-        Console.WriteLine($"End point x: {endPoint.Value.Item1} y: {endPoint.Value.Item2}");
+
         if (startPoint.Value.Item1 == endPoint.Value.Item1 && startPoint.Value.Item2 == endPoint.Value.Item2)
         {
             throw new ValidationException("Start cannot be same as end");
@@ -76,82 +72,39 @@ public static class Menu
             Console.WriteLine();
         }
 
-        for(var i = 0; i < fieldHeight; i++)
+        var adjacencyMatrix = FieldService.GetAdjacencyMatrix(fieldMatrix);
+
+        var pathFindingService = new PathFindingService();
+
+        var aStarPath = pathFindingService.AStarAlgorithm(adjacencyMatrix, fieldMatrix,
+            FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth),
+            FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth));
+        var leePath = pathFindingService.LeeAlgorithm(adjacencyMatrix, fieldMatrix,
+            FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth),
+            FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth));
+
+        if (leePath.Length == 0)
         {
-            for (var j = 0; j < fieldWidth; j++)
+            Console.WriteLine("Fail! Lee algorithm cannot find path!");
+        }
+        else
+        {
+            foreach (var point in leePath)
             {
-                Console.Write($"{fieldMatrix[i, j]} ");
-                if (fieldMatrix[i, j] != 0) continue;
-
-                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix))
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i - 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight))
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i + 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.LeftNeighboringCellIsFree(i ,j, fieldMatrix))
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth))
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth) &&
-                    fieldMatrix[i - 1, j + 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i - 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    FieldMatrixHelpers.LeftNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    fieldMatrix[i - 1, j - 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i - 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight) &&
-                    FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth) &&
-                    fieldMatrix[i + 1, j + 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i + 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight) &&
-                    FieldMatrixHelpers.LeftNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    fieldMatrix[i + 1, j - 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i + 1, fieldWidth)] = 1;
-                }
-                
+                Console.WriteLine(point);
             }
-            Console.WriteLine();
         }
-
-        for (var i = 0; i < adjacencyMatrix.GetLength(0); i++)
-        {
-            for (var j = 0; j < adjacencyMatrix.GetLength(1); j++)
-            {
-                Console.Write($"{adjacencyMatrix[i, j]} ");
-            }
-            Console.WriteLine();
-        }
-
-        var AStarAlgorithm = new AStarAlgorithm();
-
-        foreach (var point in AStarAlgorithm.GetPath(adjacencyMatrix, fieldMatrix, GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth)))
-        {
-            Console.WriteLine(point);
-        }
-        
-        var LeeAlgo = new LeeAlgorithm();
-
         Console.WriteLine();
-        foreach (var point in LeeAlgo.GetPath(adjacencyMatrix, fieldMatrix, GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth)))
+        if (aStarPath.Length == 0)
         {
-            Console.WriteLine(point);
+            Console.WriteLine("Fail! AStar algorithm cannot find path!");
         }
-        
-        //cout<<"Fail! Way is not found!"<<endl;
+        else
+        {
+            foreach (var point in aStarPath)
+            {
+                Console.WriteLine(point);
+            }
+        }
     }
 }

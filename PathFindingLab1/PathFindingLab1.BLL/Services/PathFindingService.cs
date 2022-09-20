@@ -1,8 +1,8 @@
-﻿namespace PathFindingLab1.BLL;
+﻿namespace PathFindingLab1.BLL.Services;
 
-public class AStarAlgorithm
+public class PathFindingService
 {
-    public int h(int currentPointNumber, int endPointNumber, int width, int height)
+    private int h(int currentPointNumber, int endPointNumber, int width, int height)
     {
         var currentX = currentPointNumber % width;
         var currentY = currentPointNumber / width;
@@ -10,7 +10,8 @@ public class AStarAlgorithm
         var endY = endPointNumber / width;
         return Math.Abs(currentX - endX) + Math.Abs(currentY - endY);
     }
-    public static int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width, int height)
+    
+    private int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width, int height)
     {
         var firstX = firstPointNumber % width;
         var firstY = firstPointNumber / width;
@@ -18,8 +19,8 @@ public class AStarAlgorithm
         var secondY = secondPointNumber / width;
         return firstX == firstY || secondX == secondY ? 10 : 14;
     }
-
-    public int[] GetPath(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
+    
+    public int[] AStarAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
     {
         var numberOfPoints = adjacencyMatrix.GetLength(0);
         var open = new PriorityQueue<int, int>();
@@ -49,6 +50,37 @@ public class AStarAlgorithm
                     g[i] = g[current] + DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1), fieldMatrix.GetLength(0));
                     f[i] = g[i] + h(i, end, fieldMatrix.GetLength(1), fieldMatrix.GetLength(0));
                     open.Enqueue(i, -f[i]);
+                }
+            }
+        }
+
+        return Array.Empty<int>();
+    }
+    
+    public int[] LeeAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
+    {
+        var numberOfPoints = adjacencyMatrix.GetLength(0);
+        var queue = new Queue<int>();
+        var from = Enumerable.Repeat(-1, numberOfPoints).ToArray();
+        var visited = Enumerable.Repeat(false, numberOfPoints).ToArray();
+        var distances = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
+
+        visited[start] = true;
+        queue.Enqueue(start);
+        while (queue.Count != 0)
+        {
+            var current = queue.Dequeue();
+            if (current == end)
+            {
+                return from;
+            }
+            for (var i = 0; i < numberOfPoints; i++)
+            {
+                if (adjacencyMatrix[current, i] != 0 && !visited[i])
+                {
+                    queue.Enqueue(i);
+                    from[i] = current;
+                    visited[i] = true;
                 }
             }
         }

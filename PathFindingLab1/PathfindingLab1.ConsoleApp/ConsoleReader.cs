@@ -1,6 +1,6 @@
 ﻿namespace PathfindingLab1.ConsoleApp;
 
-public class ConsoleReader
+public static class ConsoleReader
 {
     public static string? ReadFilePath()
     {
