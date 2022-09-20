@@ -14,14 +14,45 @@ public static class ConsolePrinter
             current = from[current];
         }
 
+        for (var i = 0; i < fieldMatrix.GetLength(1) + 1; i++)
+        {
+            Console.Write("--");
+        }
+        Console.WriteLine();
         for (var i = 0; i < fieldMatrix.GetLength(0); i++)
         {
+            Console.Write("|");
             for (var j = 0; j < fieldMatrix.GetLength(1); j++)
             {
                 var point = FieldService.GetPointNumber(j, i, fieldMatrix.GetLength(1));
-                Console.Write(pathPoints.Contains(point) ? "x " : $"{fieldMatrix[i, j]} ");
+                if (point == start)
+                {
+                    Console.Write("S ");
+                }
+                else if (point == end)
+                {
+                    Console.Write("E ");
+                }
+                else if (pathPoints.Contains(point))
+                {
+                    Console.Write("x ");
+                }
+                else if (fieldMatrix[i, j] == 0)
+                {
+                    Console.Write("  ");
+                }
+                else if (fieldMatrix[i, j] == 1)
+                {
+                    Console.Write("█ ");
+                }
             }
+            Console.Write("|");
             Console.WriteLine();
         }
+        for (var i = 0; i < fieldMatrix.GetLength(1) + 1; i++)
+        {
+            Console.Write("--");
+        }
+        Console.WriteLine();
     }
 }
