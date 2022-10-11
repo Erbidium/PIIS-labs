@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniMaxLab2.ConsoleApp", "MiniMaxLab2.ConsoleApp\MiniMaxLab2.ConsoleApp.csproj", "{FC9FAED6-907F-487D-8D37-83F0F278B7A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniMaxLab2.BLL", "MiniMaxLab2.BLL\MiniMaxLab2.BLL.csproj", "{23510C73-6D4D-4F2B-A425-1985CAE76098}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC9FAED6-907F-487D-8D37-83F0F278B7A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC9FAED6-907F-487D-8D37-83F0F278B7A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC9FAED6-907F-487D-8D37-83F0F278B7A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC9FAED6-907F-487D-8D37-83F0F278B7A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23510C73-6D4D-4F2B-A425-1985CAE76098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23510C73-6D4D-4F2B-A425-1985CAE76098}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23510C73-6D4D-4F2B-A425-1985CAE76098}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23510C73-6D4D-4F2B-A425-1985CAE76098}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

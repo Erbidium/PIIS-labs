@@ -489,3 +489,7 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,rider,dotnetcore
 PathFindingLab1/.idea/.idea.PathFindingLab1/.idea/
+
+MiniMaxLab2/.idea/.idea.MiniMaxLab2/.idea/
+
+MiniMaxLab2/.idea/.idea.PathFindingLab1/.idea/
