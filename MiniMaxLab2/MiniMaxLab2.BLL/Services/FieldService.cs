@@ -38,31 +38,6 @@ public static class FieldService
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i, fieldWidth)] = 1;
                 }
-                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth) &&
-                    fieldMatrix[i - 1, j + 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i - 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.TopNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    FieldMatrixHelpers.LeftNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    fieldMatrix[i - 1, j - 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i - 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight) &&
-                    FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth) &&
-                    fieldMatrix[i + 1, j + 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i + 1, fieldWidth)] = 1;
-                }
-                if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight) &&
-                    FieldMatrixHelpers.LeftNeighboringCellIsFree(i, j, fieldMatrix) &&
-                    fieldMatrix[i + 1, j - 1] == 0)
-                {
-                    adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i + 1, fieldWidth)] = 1;
-                }
-                
             }
         }
 
@@ -71,8 +46,8 @@ public static class FieldService
 
     public static int DistanceBetweenPoints(int firstPointNumber, int secondPointNumber, int width)
     {
-        var (firstX, firstY) = FieldService.GetPointCoordinates(firstPointNumber, width);
-        var (secondX, secondY) = FieldService.GetPointCoordinates(secondPointNumber, width);
+        var (firstX, firstY) = GetPointCoordinates(firstPointNumber, width);
+        var (secondX, secondY) = GetPointCoordinates(secondPointNumber, width);
         return firstX == secondX || firstY == secondY ? 10 : 14;
     }
 }

@@ -73,11 +73,11 @@ public class MinimaxService
         };
         foreach (var direction in directions)
         {
-            if (playerPosition.Item1 + direction.Item1 >= _cells.GetLength(0) || 
-                playerPosition.Item2 + direction.Item2 >= _cells.GetLength(1) ||
+            if (playerPosition.Item1 + direction.Item1 >= _cells.GetLength(1) || 
+                playerPosition.Item2 + direction.Item2 >= _cells.GetLength(0) ||
                 playerPosition.Item1 + direction.Item1 < 0 || 
                 playerPosition.Item2 + direction.Item2 < 0 ||
-                _cells[playerPosition.Item1 + direction.Item1, playerPosition.Item2 + direction.Item2] != 0) continue;
+                _cells[playerPosition.Item2 + direction.Item2, playerPosition.Item1 + direction.Item1] != 0) continue;
 
             var newPosition = (playerPosition.Item1 + direction.Item1, playerPosition.Item2 + direction.Item2);
             children.Add(new Position
