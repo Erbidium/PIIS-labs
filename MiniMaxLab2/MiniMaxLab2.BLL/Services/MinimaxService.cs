@@ -9,7 +9,7 @@ public class MinimaxService
     {
         _cells = cells;
     }
-    public (int, Position) Minimax(Position position, int depth, int alpha, int beta, bool maximizingPlayer, bool isFirstStep)
+    public (int, Position) Minimax(Position position, int depth, int alpha, int beta, bool maximizingPlayer)
     {
         var children = GenerateChildren(position, maximizingPlayer);
         if(depth == 0 ||children.Count==0)
@@ -22,7 +22,7 @@ public class MinimaxService
             var best = children.First();
             for(var i=children.Count-1;i>=0;i--)
             {
-                var eval = Minimax(children[i], depth -1, alpha, beta, false, true);
+                var eval = Minimax(children[i], depth -1, alpha, beta, false);
                 if(eval.Item1>maxEval)
                 {
                     maxEval = eval.Item1;
@@ -42,7 +42,7 @@ public class MinimaxService
             var best = children.First();
             foreach(var child in children)
             {
-                var eval = Minimax(child, depth -1, alpha, beta, true, true);
+                var eval = Minimax(child, depth -1, alpha, beta, true);
                 if(eval.Item1<minEval)
                 {
                     minEval = eval.Item1;
@@ -71,7 +71,11 @@ public class MinimaxService
         };
         foreach (var direction in directions)
         {
-            if (_cells[playerPosition.Item1 + direction.Item1, playerPosition.Item2 + direction.Item2] != 0) continue;
+            if (playerPosition.Item1 + direction.Item1 >= _cells.GetLength(0) || 
+                playerPosition.Item2 + direction.Item2 >= _cells.GetLength(1) ||
+                playerPosition.Item1 + direction.Item1 < 0 || 
+                playerPosition.Item2 + direction.Item2 < 0 ||
+                _cells[playerPosition.Item1 + direction.Item1, playerPosition.Item2 + direction.Item2] != 0) continue;
 
             var newPosition = (playerPosition.Item1 + direction.Item1, playerPosition.Item2 + direction.Item2);
             children.Add(new Position
