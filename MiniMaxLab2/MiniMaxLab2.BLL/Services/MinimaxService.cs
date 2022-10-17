@@ -5,9 +5,11 @@ namespace PathFindingLab1.BLL.Services;
 public class MinimaxService
 {
     private readonly int[,] _cells;
-    public MinimaxService(int[,] cells)
+    private (int, int) _finish;
+    public MinimaxService(int[,] cells, (int, int) finish)
     {
         _cells = cells;
+        _finish = finish;
     }
     public (int, Position) Minimax(Position position, int depth, int alpha, int beta, bool maximizingPlayer)
     {
@@ -91,6 +93,10 @@ public class MinimaxService
 
     private int EvaluationFunction(Position position)
     {
-        return Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) + Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
+        var distanceToEnemy = Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
+                              Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
+        var distanceToFinish = Math.Abs(position.PlayerPosition.Item1 - _finish.Item1) +
+                              Math.Abs(position.PlayerPosition.Item2 - _finish.Item2);
+        return distanceToEnemy * 2 - distanceToFinish;
     }
 }
