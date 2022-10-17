@@ -1,4 +1,4 @@
-﻿using PathfindingLab1.ConsoleApp.Helpers;
+﻿using PathFindingLab1.BLL.Helpers;
 
 namespace PathFindingLab1.BLL.Services;
 

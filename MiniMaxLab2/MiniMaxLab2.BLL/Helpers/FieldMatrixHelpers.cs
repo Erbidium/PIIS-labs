@@ -1,4 +1,4 @@
-﻿namespace PathfindingLab1.ConsoleApp.Helpers;
+﻿namespace PathFindingLab1.BLL.Helpers;
 
 public static class FieldMatrixHelpers
 {
