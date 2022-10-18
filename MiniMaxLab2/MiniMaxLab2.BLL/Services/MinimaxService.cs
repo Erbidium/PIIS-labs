@@ -126,16 +126,15 @@ public class MinimaxService
                 Evaluation = EvaluationFunction(position, isMaximizingPlayer)
             });
         }
-        children = children.OrderBy(child => child.Evaluation).ToList();
-        return children;
+        return children.OrderBy(child => child.Evaluation).ToList();
     }
 
     private int EvaluationFunction(Position position, bool isMaximizingPlayer)
     {
+        var distanceToEnemy = Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
+                              Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
         if (isMaximizingPlayer)
         {
-            var distanceToEnemy = Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
-                                  Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
             var distanceToFinish = Math.Abs(position.PlayerPosition.Item1 - _finish.Item1) +
                                    Math.Abs(position.PlayerPosition.Item2 - _finish.Item2);
             if (distanceToEnemy <= 1)
