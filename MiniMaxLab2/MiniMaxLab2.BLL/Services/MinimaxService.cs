@@ -142,6 +142,10 @@ public class MinimaxService
             {
                 return int.MinValue;
             }
+            if (distanceToFinish <= 1)
+            {
+                return int.MaxValue;
+            }
             return distanceToEnemy * 2 - distanceToFinish;
         }
         return Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +

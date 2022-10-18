@@ -44,8 +44,16 @@ public static class Menu
                 FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)),
                 FieldService.GetPointNumber(playerPosition.Item1, playerPosition.Item2, matrix.GetLength(1))
                 );
-            var pointNumber = Array.IndexOf(nextEnemyPosition.Item1, FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)));
-            enemyPosition = FieldService.GetPointCoordinates(pointNumber, matrix.GetLength(1));
+            var current = FieldService.GetPointNumber(playerPosition.Item1, playerPosition.Item2, matrix.GetLength(1));
+            var start = FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1));
+            while (current != start)
+            {
+                if (start == nextEnemyPosition.Item1[current])
+                {
+                    enemyPosition = FieldService.GetPointCoordinates(current, matrix.GetLength(1));
+                }
+                current = nextEnemyPosition.Item1[current];
+            }
             Console.Clear();
             ConsolePrinter.RenderGameFrame(matrix, playerPosition, enemyPosition, finishPosition);
             if (playerPosition.Item1 == enemyPosition.Item1 && playerPosition.Item2 == enemyPosition.Item2)
