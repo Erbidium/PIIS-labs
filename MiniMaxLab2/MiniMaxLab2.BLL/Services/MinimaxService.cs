@@ -5,7 +5,7 @@ namespace PathFindingLab1.BLL.Services;
 public class MinimaxService
 {
     private readonly int[,] _cells;
-    private (int, int) _finish;
+    private readonly (int, int) _finish;
     public MinimaxService(int[,] cells, (int, int) finish)
     {
         _cells = cells;
@@ -138,8 +138,11 @@ public class MinimaxService
                                   Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
             var distanceToFinish = Math.Abs(position.PlayerPosition.Item1 - _finish.Item1) +
                                    Math.Abs(position.PlayerPosition.Item2 - _finish.Item2);
-            
-            return - distanceToFinish;
+            if (distanceToEnemy <= 1)
+            {
+                return int.MinValue;
+            }
+            return distanceToEnemy * 2 - distanceToFinish;
         }
         return Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
                Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
