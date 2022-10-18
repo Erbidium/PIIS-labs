@@ -13,8 +13,8 @@ public static class Menu
         var algorithmChoice = int.Parse(Console.ReadLine() ?? "0");
         FileReader.ReadGameFieldWithStartData(out var matrix, out var playerPosition, out var finishPosition,
             out var enemyPosition);
-        var minimaxService = new MinimaxService(matrix, finishPosition);
-        var pathFindingService = new PathFindingService();
+        var pathFindingService = new PathFindingService(FieldService.GetAdjacencyMatrix(matrix), matrix);
+        var minimaxService = new MinimaxService(matrix, finishPosition, pathFindingService);
         while (true)
         {
             var nextPlayerPosition = algorithmChoice == 0
@@ -44,8 +44,6 @@ public static class Menu
             }
 
             var nextEnemyPosition = pathFindingService.AStarAlgorithm(
-                FieldService.GetAdjacencyMatrix(matrix),
-                matrix,
                 FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)),
                 FieldService.GetPointNumber(playerPosition.Item1, playerPosition.Item2, matrix.GetLength(1))
             );
@@ -69,7 +67,7 @@ public static class Menu
                 break;
             }
 
-            Thread.Sleep(3000);
+            //Thread.Sleep(1000);
         }
     }
 }

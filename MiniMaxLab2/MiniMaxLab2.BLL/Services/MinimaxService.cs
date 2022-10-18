@@ -6,11 +6,13 @@ public class MinimaxService
 {
     private readonly int[,] _cells;
     private readonly (int, int) _finish;
+    private readonly PathFindingService _pathFindingService;
 
-    public MinimaxService(int[,] cells, (int, int) finish)
+    public MinimaxService(int[,] cells, (int, int) finish, PathFindingService pathFindingService)
     {
         _cells = cells;
         _finish = finish;
+        _pathFindingService = pathFindingService;
     }
 
     public (int, Position) MinimaxWithAlphaBetaPruning(Position position, int depth, int alpha, int beta,
@@ -147,8 +149,10 @@ public class MinimaxService
                               Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
         if (isMaximizingPlayer)
         {
-            var distanceToFinish = Math.Abs(position.PlayerPosition.Item1 - _finish.Item1) +
-                                   Math.Abs(position.PlayerPosition.Item2 - _finish.Item2);
+            var distanceToFinish = _pathFindingService.AStarAlgorithm(
+                FieldService.GetPointNumber(position.PlayerPosition.Item1, position.PlayerPosition.Item2, _cells.GetLength(1)),
+                FieldService.GetPointNumber(_finish.Item1, _finish.Item2, _cells.GetLength(1))
+            ).Item2;
             if (distanceToEnemy <= 1)
             {
                 return int.MinValue;
@@ -162,7 +166,6 @@ public class MinimaxService
             return distanceToEnemy * 2 - distanceToFinish;
         }
 
-        return Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
-               Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
+        return distanceToEnemy;
     }
 }
