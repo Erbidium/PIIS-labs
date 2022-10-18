@@ -99,11 +99,11 @@ public class MinimaxService
                               Math.Abs(position.PlayerPosition.Item2 - _finish.Item2);
         if (distanceToFinish <= 1)
         {
-            return Int32.MaxValue;
+            return int.MaxValue;
         }
         if (distanceToEnemy <= 1)
         {
-            return Int32.MinValue;
+            return int.MinValue;
         }
         return distanceToEnemy * 2 - distanceToFinish;
     }

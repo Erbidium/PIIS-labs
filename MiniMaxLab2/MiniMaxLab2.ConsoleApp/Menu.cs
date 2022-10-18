@@ -1,4 +1,5 @@
-﻿using PathFindingLab1.BLL.Services;
+using PathFindingLab1.BLL.Entities;
+using PathFindingLab1.BLL.Services;
 using PathfindingLab1.ConsoleApp.Exceptions;
 
 namespace PathfindingLab1.ConsoleApp;
@@ -7,99 +8,66 @@ public static class Menu
 {
     public static void ShowMenu()
     {
-        var filePath = ConsoleReader.ReadFilePath();
-        if (filePath is null)
-        {
-            throw new FileNotFoundException("File with field doesn't exist");
-        }
-
-        var fileLines = File.ReadLines(filePath).ToList();
-        var fieldHeight = fileLines.Count;
-        if (fieldHeight == 0)
-        {
-            throw new ValidationException("Field height cannot be zero!");
-        }
-        var fieldWidth = fileLines[0].Length;
-        ValuesValidator.FieldWidthIsValid(fieldWidth);
-
-        var fieldMatrix = new int[fieldHeight, fieldWidth];
-        
-        var startPoint = ConsoleReader.ReadStartPointCoordinates();
-        if (startPoint is null)
-        {
-            throw new WrongInputException();
-        }
-        ValuesValidator.PointIsValid(startPoint.Value, fieldMatrix);
-
-        var endPoint = ConsoleReader.ReadEndPointCoordinates();
-        if (endPoint is null)
-        {
-            throw new WrongInputException();
-        }
-        ValuesValidator.PointIsValid(endPoint.Value, fieldMatrix);
-
-        if (startPoint.Value.Item1 == endPoint.Value.Item1 && startPoint.Value.Item2 == endPoint.Value.Item2)
-        {
-            throw new ValidationException("Start cannot be same as end");
-        }
-        if (fieldMatrix[startPoint.Value.Item2, startPoint.Value.Item1] == 1)
-        {
-            throw new ValidationException("Start is not free");
-        }
-        if (fieldMatrix[endPoint.Value.Item2, endPoint.Value.Item1] == 1)
-        {
-            throw new ValidationException("End is not free");
-        }
-
-        for(var i = 0; i < fileLines.Count; i++)
-        {
-            if (fileLines[i].Length < fieldWidth)
-            {
-                throw new ValidationException("Field should have rectangle shape!");
-            }
-            for(var j = 0; j < fileLines[i].Length; j++)
-            {
-                if (!int.TryParse(fileLines[i][j].ToString(), out var pointValue) || pointValue > 1)
-                {
-                    Console.WriteLine("Wrong point value");
-                    return;
-                }
-
-                fieldMatrix[i, j] = pointValue;
-            }
-        }
-
-        var adjacencyMatrix = FieldService.GetAdjacencyMatrix(fieldMatrix);
-
+        FileReader.ReadGameFieldWithStartData(out var matrix, out var playerPosition, out var finishPosition, out var enemyPosition);
+        var minimaxService = new MinimaxService(matrix, finishPosition);
         var pathFindingService = new PathFindingService();
+        while (true)
+        {
+            var nextPlayerPosition = minimaxService.Minimax(new Position
+            {
+                PlayerPosition = playerPosition,
+                EnemyPosition = enemyPosition
+            }, 10, int.MinValue, int.MaxValue, true);
+            playerPosition = nextPlayerPosition.Item2.PlayerPosition;
+            if (playerPosition.Item1 == finishPosition.Item1 && playerPosition.Item2 == finishPosition.Item2)
+            {
+                Console.WriteLine("Player win");
+                break;
+            }
+            if (playerPosition.Item1 == enemyPosition.Item1 && playerPosition.Item2 == enemyPosition.Item2)
+            {
+                Console.WriteLine("Player died");
+                break;
+            }
+            var nextEnemyPosition = pathFindingService.AStarAlgorithm(
+                FieldService.GetAdjacencyMatrix(matrix), 
+                matrix, 
+                FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)),
+                FieldService.GetPointNumber(playerPosition.Item1, playerPosition.Item2, matrix.GetLength(1))
+                );
+            var pointNumber = Array.IndexOf(nextEnemyPosition.Item1, FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)));
+            enemyPosition = FieldService.GetPointCoordinates(pointNumber, matrix.GetLength(1));
+            if (playerPosition.Item1 == enemyPosition.Item1 && playerPosition.Item2 == enemyPosition.Item2)
+            {
+                Console.WriteLine("Player died");
+                break;
+            }
+            Console.Clear();
+            for (var i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (var j = 0; j < matrix.GetLength(1); j++)
+                {
+                    if (i == playerPosition.Item2 && j == playerPosition.Item1)
+                    {
+                        Console.Write("P");
+                    }
+                    else if (i == enemyPosition.Item2 && j == enemyPosition.Item1)
+                    {
+                        Console.Write("E");
+                    }
+                    else if (i == finishPosition.Item2 && j == finishPosition.Item1)
+                    {
+                        Console.Write("F");
+                    }
+                    else
+                    {
+                        Console.Write($"{matrix[i, j]}");
+                    }
+                }
+                Console.WriteLine();
+            }
+            Thread.Sleep(3000);
+        }
 
-        var (aStarPathFrom, aStarPathLength) = pathFindingService.AStarAlgorithm(adjacencyMatrix, fieldMatrix,
-            FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth),
-            FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth));
-        var (leePathFrom, leePathLength) = pathFindingService.LeeAlgorithm(adjacencyMatrix, fieldMatrix,
-            FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth),
-            FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth));
-
-        if (leePathFrom.Length == 0)
-        {
-            Console.WriteLine("Fail! Lee algorithm cannot find path!");
-        }
-        else
-        {
-            Console.WriteLine("Lee algorithm");
-            Console.WriteLine($"Path length: {leePathLength}");
-            ConsolePrinter.PrintAlgorithmResults(leePathFrom, FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth), fieldMatrix);
-        }
-        Console.WriteLine();
-        if (aStarPathFrom.Length == 0)
-        {
-            Console.WriteLine("Fail! AStar algorithm cannot find path!");
-        }
-        else
-        {
-            Console.WriteLine("AStar algorithm");
-            Console.WriteLine($"Path length: {aStarPathLength}");
-            ConsolePrinter.PrintAlgorithmResults(aStarPathFrom, FieldService.GetPointNumber(startPoint.Value.Item1, startPoint.Value.Item2, fieldWidth), FieldService.GetPointNumber(endPoint.Value.Item1, endPoint.Value.Item2, fieldWidth), fieldMatrix);
-        }
     }
 }
