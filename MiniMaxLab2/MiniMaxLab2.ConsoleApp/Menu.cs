@@ -1,6 +1,5 @@
 using PathFindingLab1.BLL.Entities;
 using PathFindingLab1.BLL.Services;
-using PathfindingLab1.ConsoleApp.Exceptions;
 
 namespace PathfindingLab1.ConsoleApp;
 
