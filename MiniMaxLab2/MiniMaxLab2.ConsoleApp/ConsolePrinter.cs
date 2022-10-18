@@ -4,7 +4,8 @@ namespace PathfindingLab1.ConsoleApp;
 
 public static class ConsolePrinter
 {
-    public static void RenderGameFrame(int[,] matrix, (int, int) playerPosition, (int, int) enemyPosition, (int, int) finishPosition)
+    public static void RenderGameFrame(int[,] matrix, (int, int) playerPosition, (int, int) enemyPosition,
+        (int, int) finishPosition)
     {
         for (var i = 0; i < matrix.GetLength(0); i++)
         {
@@ -32,6 +33,7 @@ public static class ConsolePrinter
                     Console.Write($"{matrix[i, j]}");
                 }
             }
+
             Console.WriteLine();
         }
     }

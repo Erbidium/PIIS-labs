@@ -9,14 +9,15 @@ public static class FieldService
         return y * width + x;
     }
 
-    public static (int, int) GetPointCoordinates(int pointNumber, int width) => (pointNumber % width, pointNumber / width);
+    public static (int, int) GetPointCoordinates(int pointNumber, int width) =>
+        (pointNumber % width, pointNumber / width);
 
     public static int[,] GetAdjacencyMatrix(int[,] fieldMatrix)
     {
         var fieldHeight = fieldMatrix.GetLength(0);
         var fieldWidth = fieldMatrix.GetLength(1);
         var adjacencyMatrix = new int[fieldHeight * fieldWidth, fieldHeight * fieldWidth];
-        for(var i = 0; i < fieldHeight; i++)
+        for (var i = 0; i < fieldHeight; i++)
         {
             for (var j = 0; j < fieldWidth; j++)
             {
@@ -26,14 +27,17 @@ public static class FieldService
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i - 1, fieldWidth)] = 1;
                 }
+
                 if (FieldMatrixHelpers.BottomNeighboringCellIsFree(i, j, fieldMatrix, fieldHeight))
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j, i + 1, fieldWidth)] = 1;
                 }
-                if (FieldMatrixHelpers.LeftNeighboringCellIsFree(i ,j, fieldMatrix))
+
+                if (FieldMatrixHelpers.LeftNeighboringCellIsFree(i, j, fieldMatrix))
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j - 1, i, fieldWidth)] = 1;
                 }
+
                 if (FieldMatrixHelpers.RightNeighboringCellIsFree(i, j, fieldMatrix, fieldWidth))
                 {
                     adjacencyMatrix[GetPointNumber(j, i, fieldWidth), GetPointNumber(j + 1, i, fieldWidth)] = 1;

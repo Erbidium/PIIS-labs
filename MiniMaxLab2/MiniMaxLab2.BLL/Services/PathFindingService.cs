@@ -33,10 +33,12 @@ public class PathFindingService
 
             for (var i = 0; i < numberOfPoints; i++)
             {
-                if (adjacencyMatrix[current, i] != 0 && isOpen[i] && distances[current] + FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1)) < distances[i])
+                if (adjacencyMatrix[current, i] != 0 && isOpen[i] && distances[current] +
+                    FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1)) < distances[i])
                 {
                     from[i] = current;
-                    distances[i] = distances[current] + FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
+                    distances[i] = distances[current] +
+                                   FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
                     f[i] = distances[i] + HeuristicValue(i, end, fieldMatrix.GetLength(1));
                     open.Enqueue(i, f[i]);
                 }
@@ -45,7 +47,7 @@ public class PathFindingService
 
         return (Array.Empty<int>(), 0);
     }
-    
+
     public (int[], int) LeeAlgorithm(int[,] adjacencyMatrix, int[,] fieldMatrix, int start, int end)
     {
         var numberOfPoints = adjacencyMatrix.GetLength(0);
@@ -64,13 +66,15 @@ public class PathFindingService
             {
                 return (from, distances[end]);
             }
+
             for (var i = 0; i < numberOfPoints; i++)
             {
                 if (adjacencyMatrix[current, i] != 0 && !visited[i])
                 {
                     queue.Enqueue(i);
                     from[i] = current;
-                    distances[i] = distances[current] + FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
+                    distances[i] = distances[current] +
+                                   FieldService.DistanceBetweenPoints(current, i, fieldMatrix.GetLength(1));
                     visited[i] = true;
                 }
             }

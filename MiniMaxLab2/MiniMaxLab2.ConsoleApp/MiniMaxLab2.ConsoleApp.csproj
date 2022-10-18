@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MiniMaxLab2.BLL\MiniMaxLab2.BLL.csproj" />
+        <ProjectReference Include="..\MiniMaxLab2.BLL\MiniMaxLab2.BLL.csproj"/>
     </ItemGroup>
 
 </Project>

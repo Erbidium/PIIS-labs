@@ -6,56 +6,64 @@ public class MinimaxService
 {
     private readonly int[,] _cells;
     private readonly (int, int) _finish;
+
     public MinimaxService(int[,] cells, (int, int) finish)
     {
         _cells = cells;
         _finish = finish;
     }
-    public (int, Position) MinimaxWithAlphaBetaPruning(Position position, int depth, int alpha, int beta, bool maximizingPlayer)
+
+    public (int, Position) MinimaxWithAlphaBetaPruning(Position position, int depth, int alpha, int beta,
+        bool maximizingPlayer)
     {
         var children = GenerateChildren(position, maximizingPlayer);
-        if(depth == 0 ||children.Count==0)
+        if (depth == 0 || children.Count == 0)
         {
             return (position.Evaluation, position);
         }
-        if(maximizingPlayer)
+
+        if (maximizingPlayer)
         {
             var maxEval = int.MinValue;
             var best = children.First();
-            for(var i=children.Count-1;i>=0;i--)
+            for (var i = children.Count - 1; i >= 0; i--)
             {
-                var eval = MinimaxWithAlphaBetaPruning(children[i], depth -1, alpha, beta, false);
-                if(eval.Item1>maxEval)
+                var eval = MinimaxWithAlphaBetaPruning(children[i], depth - 1, alpha, beta, false);
+                if (eval.Item1 > maxEval)
                 {
                     maxEval = eval.Item1;
-                    best=children[i];
+                    best = children[i];
                 }
+
                 alpha = Math.Max(alpha, eval.Item1);
-                if(beta<=alpha)
+                if (beta <= alpha)
                 {
                     break;
                 }
             }
+
             return (maxEval, best);
         }
         else
         {
             var minEval = int.MaxValue;
             var best = children.First();
-            foreach(var child in children)
+            foreach (var child in children)
             {
-                var eval = MinimaxWithAlphaBetaPruning(child, depth -1, alpha, beta, true);
-                if(eval.Item1<minEval)
+                var eval = MinimaxWithAlphaBetaPruning(child, depth - 1, alpha, beta, true);
+                if (eval.Item1 < minEval)
                 {
                     minEval = eval.Item1;
-                    best=child;
+                    best = child;
                 }
+
                 beta = Math.Min(beta, eval.Item1);
-                if(beta<=alpha)
+                if (beta <= alpha)
                 {
                     break;
                 }
             }
+
             return (minEval, best);
         }
     }
@@ -63,38 +71,41 @@ public class MinimaxService
     public (int, Position) Minimax(Position position, int depth, bool maximizingPlayer)
     {
         var children = GenerateChildren(position, maximizingPlayer);
-        if(depth == 0 ||children.Count==0)
+        if (depth == 0 || children.Count == 0)
         {
             return (position.Evaluation, position);
         }
-        if(maximizingPlayer)
+
+        if (maximizingPlayer)
         {
             var maxEval = int.MinValue;
             var best = children.First();
-            for(var i=children.Count-1;i>=0;i--)
+            for (var i = children.Count - 1; i >= 0; i--)
             {
                 var eval = Minimax(children[i], depth - 1, false);
-                if(eval.Item1>maxEval)
+                if (eval.Item1 > maxEval)
                 {
                     maxEval = eval.Item1;
-                    best=children[i];
+                    best = children[i];
                 }
             }
+
             return (maxEval, best);
         }
         else
         {
             var minEval = int.MaxValue;
             var best = children.First();
-            foreach(var child in children)
+            foreach (var child in children)
             {
                 var eval = Minimax(child, depth - 1, true);
-                if(eval.Item1<minEval)
+                if (eval.Item1 < minEval)
                 {
                     minEval = eval.Item1;
-                    best=child;
+                    best = child;
                 }
             }
+
             return (minEval, best);
         }
     }
@@ -103,7 +114,7 @@ public class MinimaxService
     {
         var children = new List<Position>();
         var playerPosition = isMaximizingPlayer ? position.PlayerPosition : position.EnemyPosition;
-        var directions = new []
+        var directions = new[]
         {
             (1, 0),
             (-1, 0),
@@ -112,9 +123,9 @@ public class MinimaxService
         };
         foreach (var direction in directions)
         {
-            if (playerPosition.Item1 + direction.Item1 >= _cells.GetLength(1) || 
+            if (playerPosition.Item1 + direction.Item1 >= _cells.GetLength(1) ||
                 playerPosition.Item2 + direction.Item2 >= _cells.GetLength(0) ||
-                playerPosition.Item1 + direction.Item1 < 0 || 
+                playerPosition.Item1 + direction.Item1 < 0 ||
                 playerPosition.Item2 + direction.Item2 < 0 ||
                 _cells[playerPosition.Item2 + direction.Item2, playerPosition.Item1 + direction.Item1] != 0) continue;
 
@@ -126,6 +137,7 @@ public class MinimaxService
                 Evaluation = EvaluationFunction(position, isMaximizingPlayer)
             });
         }
+
         return children.OrderBy(child => child.Evaluation).ToList();
     }
 
@@ -141,12 +153,15 @@ public class MinimaxService
             {
                 return int.MinValue;
             }
+
             if (distanceToFinish <= 1)
             {
                 return int.MaxValue;
             }
+
             return distanceToEnemy * 2 - distanceToFinish;
         }
+
         return Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
                Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
     }
