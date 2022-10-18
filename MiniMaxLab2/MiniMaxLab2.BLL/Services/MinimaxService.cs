@@ -84,27 +84,32 @@ public class MinimaxService
             {
                 PlayerPosition = isMaximizingPlayer ? newPosition : position.PlayerPosition,
                 EnemyPosition = !isMaximizingPlayer ? newPosition : position.EnemyPosition,
-                Evaluation = EvaluationFunction(position)
+                Evaluation = EvaluationFunction(position, isMaximizingPlayer)
             });
         }
         children = children.OrderByDescending(child => child.Evaluation).ToList();
         return children;
     }
 
-    private int EvaluationFunction(Position position)
+    private int EvaluationFunction(Position position, bool isMaximizingPlayer)
     {
-        var distanceToEnemy = Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
-                              Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
-        var distanceToFinish = Math.Abs(position.PlayerPosition.Item1 - _finish.Item1) +
-                              Math.Abs(position.PlayerPosition.Item2 - _finish.Item2);
-        if (distanceToFinish <= 1)
+        if (isMaximizingPlayer)
         {
-            return int.MaxValue;
+            var distanceToEnemy = Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
+                                  Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
+            var distanceToFinish = Math.Abs(position.PlayerPosition.Item1 - _finish.Item1) +
+                                   Math.Abs(position.PlayerPosition.Item2 - _finish.Item2);
+            if (distanceToFinish <= 1)
+            {
+                return int.MaxValue;
+            }
+            if (distanceToEnemy <= 1)
+            {
+                return int.MinValue;
+            }
+            return distanceToEnemy - 2 * distanceToFinish;
         }
-        if (distanceToEnemy <= 1)
-        {
-            return int.MinValue;
-        }
-        return distanceToEnemy * 2 - distanceToFinish;
+        return Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
+               Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
     }
 }
