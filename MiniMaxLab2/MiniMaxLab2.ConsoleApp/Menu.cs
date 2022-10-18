@@ -7,16 +7,24 @@ public static class Menu
 {
     public static void ShowMenu()
     {
+        Console.WriteLine("Please, choose algorithm: ");
+        Console.WriteLine("Minimax(0)");
+        Console.WriteLine("Minimax with alpha beta pruning(1)");
+        var algorithmChoice = int.Parse(Console.ReadLine() ?? "0");
         FileReader.ReadGameFieldWithStartData(out var matrix, out var playerPosition, out var finishPosition, out var enemyPosition);
         var minimaxService = new MinimaxService(matrix, finishPosition);
         var pathFindingService = new PathFindingService();
         while (true)
         {
-            var nextPlayerPosition = minimaxService.MinimaxWithAlphaBetaPruning(new Position
+            var nextPlayerPosition = algorithmChoice == 0 ? minimaxService.Minimax(new Position
+                    {
+                        PlayerPosition = playerPosition,
+                        EnemyPosition = enemyPosition
+                    }, 15, true) : minimaxService.MinimaxWithAlphaBetaPruning(new Position
             {
                 PlayerPosition = playerPosition,
                 EnemyPosition = enemyPosition
-            }, 10, int.MinValue, int.MaxValue, true);
+            }, 15, int.MinValue, int.MaxValue, true);
             playerPosition = nextPlayerPosition.Item2.PlayerPosition;
             Console.Clear();
             ConsolePrinter.RenderGameFrame(matrix, playerPosition, enemyPosition, finishPosition);
