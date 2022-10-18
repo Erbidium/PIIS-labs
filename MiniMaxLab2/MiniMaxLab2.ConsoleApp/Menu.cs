@@ -12,7 +12,7 @@ public static class Menu
         var pathFindingService = new PathFindingService();
         while (true)
         {
-            var nextPlayerPosition = minimaxService.Minimax(new Position
+            var nextPlayerPosition = minimaxService.MinimaxWithAlphaBetaPruning(new Position
             {
                 PlayerPosition = playerPosition,
                 EnemyPosition = enemyPosition
@@ -30,7 +30,7 @@ public static class Menu
                 Console.WriteLine("Player died");
                 break;
             }
-            var nextEnemyPosition = pathFindingService.AStarAlgorithm(
+            var nextEnemyPosition = pathFindingService.LeeAlgorithm(
                 FieldService.GetAdjacencyMatrix(matrix), 
                 matrix, 
                 FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)),
