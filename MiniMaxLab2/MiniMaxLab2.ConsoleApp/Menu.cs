@@ -18,6 +18,8 @@ public static class Menu
                 EnemyPosition = enemyPosition
             }, 10, int.MinValue, int.MaxValue, true);
             playerPosition = nextPlayerPosition.Item2.PlayerPosition;
+            Console.Clear();
+            ConsolePrinter.RenderGameFrame(matrix, playerPosition, enemyPosition, finishPosition);
             if (playerPosition.Item1 == finishPosition.Item1 && playerPosition.Item2 == finishPosition.Item2)
             {
                 Console.WriteLine("Player win");
@@ -36,34 +38,12 @@ public static class Menu
                 );
             var pointNumber = Array.IndexOf(nextEnemyPosition.Item1, FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)));
             enemyPosition = FieldService.GetPointCoordinates(pointNumber, matrix.GetLength(1));
+            Console.Clear();
+            ConsolePrinter.RenderGameFrame(matrix, playerPosition, enemyPosition, finishPosition);
             if (playerPosition.Item1 == enemyPosition.Item1 && playerPosition.Item2 == enemyPosition.Item2)
             {
                 Console.WriteLine("Player died");
                 break;
-            }
-            Console.Clear();
-            for (var i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (var j = 0; j < matrix.GetLength(1); j++)
-                {
-                    if (i == playerPosition.Item2 && j == playerPosition.Item1)
-                    {
-                        Console.Write("P");
-                    }
-                    else if (i == enemyPosition.Item2 && j == enemyPosition.Item1)
-                    {
-                        Console.Write("E");
-                    }
-                    else if (i == finishPosition.Item2 && j == finishPosition.Item1)
-                    {
-                        Console.Write("F");
-                    }
-                    else
-                    {
-                        Console.Write($"{matrix[i, j]}");
-                    }
-                }
-                Console.WriteLine();
             }
             Thread.Sleep(3000);
         }
