@@ -38,7 +38,7 @@ public static class Menu
                 Console.WriteLine("Player died");
                 break;
             }
-            var nextEnemyPosition = pathFindingService.LeeAlgorithm(
+            var nextEnemyPosition = pathFindingService.AStarAlgorithm(
                 FieldService.GetAdjacencyMatrix(matrix), 
                 matrix, 
                 FieldService.GetPointNumber(enemyPosition.Item1, enemyPosition.Item2, matrix.GetLength(1)),
