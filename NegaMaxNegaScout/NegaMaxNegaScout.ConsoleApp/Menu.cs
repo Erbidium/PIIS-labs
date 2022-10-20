@@ -27,7 +27,7 @@ public static class Menu
                 {
                     PlayerPosition = playerPosition,
                     EnemyPosition = enemyPosition
-                }, 15, int.MinValue, int.MaxValue, -1);
+                }, 15, int.MinValue, int.MaxValue, 1);
             playerPosition = nextPlayerPosition.Item2.PlayerPosition;
             Console.Clear();
             ConsolePrinter.RenderGameFrame(matrix, playerPosition, enemyPosition, finishPosition);

@@ -94,18 +94,18 @@ public class NegamaxService
             {
                 PlayerPosition = color > 0 ? newPosition : position.PlayerPosition,
                 EnemyPosition = color < 0 ? newPosition : position.EnemyPosition,
-                Evaluation = EvaluationFunction(position, color > 0)
+                Evaluation = EvaluationFunction(position, color)
             });
         }
 
-        return children;
+        return (color > 0 ? children.OrderByDescending(child => child.Evaluation) : children.OrderBy(child => child.Evaluation)).ToList();
     }
 
-    private int EvaluationFunction(Position position, bool isMaximizingPlayer)
+    private int EvaluationFunction(Position position, int color)
     {
         var distanceToEnemy = Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
                               Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
-        if (isMaximizingPlayer)
+        if (color > 0)
         {
             var distanceToFinish = _pathFindingService.AStarAlgorithm(
                 FieldService.GetPointNumber(position.PlayerPosition.Item1, position.PlayerPosition.Item2, _cells.GetLength(1)),
