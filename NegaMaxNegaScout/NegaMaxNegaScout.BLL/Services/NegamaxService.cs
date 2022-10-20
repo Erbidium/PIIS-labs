@@ -7,6 +7,7 @@ public class NegamaxService
     private readonly int[,] _cells;
     private readonly (int, int) _finish;
     private readonly PathFindingService _pathFindingService;
+    private readonly List<Position> _children = new();
 
     public NegamaxService(int[,] cells, (int, int) finish, PathFindingService pathFindingService)
     {
@@ -72,7 +73,7 @@ public class NegamaxService
 
     private List<Position> GenerateChildren(Position position, int color)
     {
-        var children = new List<Position>();
+        _children.Clear();
         var playerPosition = color > 0 ? position.PlayerPosition : position.EnemyPosition;
         var directions = new[]
         {
@@ -90,7 +91,7 @@ public class NegamaxService
                 _cells[playerPosition.Item2 + direction.Item2, playerPosition.Item1 + direction.Item1] != 0) continue;
 
             var newPosition = (playerPosition.Item1 + direction.Item1, playerPosition.Item2 + direction.Item2);
-            children.Add(new Position
+            _children.Add(new Position
             {
                 PlayerPosition = color > 0 ? newPosition : position.PlayerPosition,
                 EnemyPosition = color < 0 ? newPosition : position.EnemyPosition,
@@ -98,7 +99,7 @@ public class NegamaxService
             });
         }
 
-        return (color > 0 ? children.OrderByDescending(child => child.Evaluation) : children.OrderBy(child => child.Evaluation)).ToList();
+        return (color > 0 ? _children.OrderByDescending(child => child.Evaluation) : _children.OrderBy(child => child.Evaluation)).ToList();
     }
 
     private int EvaluationFunction(Position position, int color)

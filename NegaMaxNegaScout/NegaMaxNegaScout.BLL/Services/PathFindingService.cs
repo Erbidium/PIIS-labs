@@ -4,6 +4,9 @@ public class PathFindingService
 {
     private readonly int[,] _adjacencyMatrix;
     private readonly int[,] _fieldMatrix;
+    private readonly List<int> _from = new();
+    private readonly List<int> _distances = new();
+    private readonly List<int> _f = new();
     public PathFindingService(int[,] adjacencyMatrix, int[,] fieldMatrix)
     {
         _adjacencyMatrix = adjacencyMatrix;
@@ -20,13 +23,16 @@ public class PathFindingService
     {
         var numberOfPoints = _adjacencyMatrix.GetLength(0);
         var open = new PriorityQueue<int, int>();
-        var from = Enumerable.Repeat(-1, numberOfPoints).ToArray();
-        var distances = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
-        var f = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
+        _from.Clear();
+        _distances.Clear();
+        _f.Clear();
+        _from.AddRange(Enumerable.Repeat(-1, numberOfPoints));
+        _distances.AddRange(Enumerable.Repeat(int.MaxValue, numberOfPoints));
+        _f.AddRange(Enumerable.Repeat(int.MaxValue, numberOfPoints));
         var isOpen = Enumerable.Repeat(true, numberOfPoints).ToArray();
-        distances[start] = 0;
-        f[start] = distances[start] + HeuristicValue(start, end, _fieldMatrix.GetLength(1));
-        open.Enqueue(start, f[start]);
+        _distances[start] = 0;
+        _f[start] = _distances[start] + HeuristicValue(start, end, _fieldMatrix.GetLength(1));
+        open.Enqueue(start, _f[start]);
         while (open.Count != 0)
         {
             var current = open.Dequeue();
@@ -35,19 +41,19 @@ public class PathFindingService
             isOpen[current] = false;
             if (current == end)
             {
-                return (from, distances[end]);
+                return (_from.ToArray(), _distances[end]);
             }
 
             for (var i = 0; i < numberOfPoints; i++)
             {
-                if (_adjacencyMatrix[current, i] != 0 && isOpen[i] && distances[current] +
-                    FieldService.DistanceBetweenPoints(current, i, _fieldMatrix.GetLength(1)) < distances[i])
+                if (_adjacencyMatrix[current, i] != 0 && isOpen[i] && _distances[current] +
+                    FieldService.DistanceBetweenPoints(current, i, _fieldMatrix.GetLength(1)) < _distances[i])
                 {
-                    from[i] = current;
-                    distances[i] = distances[current] +
+                    _from[i] = current;
+                    _distances[i] = _distances[current] +
                                    FieldService.DistanceBetweenPoints(current, i, _fieldMatrix.GetLength(1));
-                    f[i] = distances[i] + HeuristicValue(i, end, _fieldMatrix.GetLength(1));
-                    open.Enqueue(i, f[i]);
+                    _f[i] = _distances[i] + HeuristicValue(i, end, _fieldMatrix.GetLength(1));
+                    open.Enqueue(i, _f[i]);
                 }
             }
         }
