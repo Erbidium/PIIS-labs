@@ -29,7 +29,7 @@ public class NegamaxService
         var best = children.First();
         foreach (var child in children)
         {
-            var eval = NegamaxWithAlphaBetaPruning(child, depth - 1, alpha, beta, -color);
+            var eval = NegamaxWithAlphaBetaPruning(child, depth - 1, -beta, -alpha, -color);
             eval.Item1 *= -1;
             if (eval.Item1 > maxEval)
             {
