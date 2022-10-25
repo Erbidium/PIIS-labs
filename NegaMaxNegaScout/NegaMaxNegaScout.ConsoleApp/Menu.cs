@@ -22,7 +22,7 @@ public static class Menu
                 {
                     PlayerPosition = playerPosition,
                     EnemyPosition = enemyPosition
-                }, 15, -1)
+                }, 15, 1)
                 : minimaxService.NegamaxWithAlphaBetaPruning(new Position
                 {
                     PlayerPosition = playerPosition,
@@ -58,7 +58,7 @@ public static class Menu
 
                 current = nextEnemyPosition.Item1[current];
             }
-
+            
             Console.Clear();
             ConsolePrinter.RenderGameFrame(matrix, playerPosition, enemyPosition, finishPosition);
             if (playerPosition.Item1 == enemyPosition.Item1 && playerPosition.Item2 == enemyPosition.Item2)

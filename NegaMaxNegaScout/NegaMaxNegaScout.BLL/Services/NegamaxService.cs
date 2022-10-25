@@ -16,7 +16,7 @@ public class NegamaxService
         _pathFindingService = pathFindingService;
     }
 
-    public (int, Position) NegamaxWithAlphaBetaPruning(Position position, int depth, int alpha, int beta,
+    public (float, Position) NegamaxWithAlphaBetaPruning(Position position, int depth, float alpha, float beta,
         int color)
     {
         var children = GenerateChildren(position, color);
@@ -25,7 +25,7 @@ public class NegamaxService
             return (position.Evaluation * color, position);
         }
 
-        var maxEval = int.MinValue;
+        var maxEval = float.MinValue;
         var best = children.First();
         foreach (var child in children)
         {
@@ -38,7 +38,7 @@ public class NegamaxService
             }
 
             alpha = Math.Max(alpha, eval.Item1);
-            if (beta <= alpha)
+            if (alpha >= beta)
             {
                 break;
             }
@@ -47,7 +47,7 @@ public class NegamaxService
         return (maxEval, best);
     }
 
-    public (int, Position) Negamax(Position position, int depth, int color)
+    public (float, Position) Negamax(Position position, int depth, int color)
     {
         var children = GenerateChildren(position, color);
         if (depth == 0 || children.Count == 0)
@@ -55,7 +55,7 @@ public class NegamaxService
             return (position.Evaluation * color, position);
         }
 
-        var maxEval = int.MinValue;
+        var maxEval = float.MinValue;
         var best = children.First();
         foreach (var child in children)
         {
@@ -73,6 +73,10 @@ public class NegamaxService
 
     private List<Position> GenerateChildren(Position position, int color)
     {
+        if (position.PlayerPosition == position.EnemyPosition || position.PlayerPosition == _finish)
+        {
+            return new List<Position>();
+        }
         _children.Clear();
         var playerPosition = color > 0 ? position.PlayerPosition : position.EnemyPosition;
         var directions = new[]
@@ -102,10 +106,12 @@ public class NegamaxService
         return (color > 0 ? _children.OrderByDescending(child => child.Evaluation) : _children.OrderBy(child => child.Evaluation)).ToList();
     }
 
-    private int EvaluationFunction(Position position, int color)
+    private float EvaluationFunction(Position position, int color)
     {
-        var distanceToEnemy = Math.Abs(position.PlayerPosition.Item1 - position.EnemyPosition.Item1) +
-                              Math.Abs(position.PlayerPosition.Item2 - position.EnemyPosition.Item2);
+        var distanceToEnemy = _pathFindingService.AStarAlgorithm(
+            FieldService.GetPointNumber(position.PlayerPosition.Item1, position.PlayerPosition.Item2, _cells.GetLength(1)),
+            FieldService.GetPointNumber(position.EnemyPosition.Item1, position.EnemyPosition.Item2, _cells.GetLength(1))
+        ).Item2;;
         if (color > 0)
         {
             var distanceToFinish = _pathFindingService.AStarAlgorithm(
@@ -122,7 +128,7 @@ public class NegamaxService
                 return int.MaxValue;
             }
 
-            return distanceToEnemy * 2 - distanceToFinish;
+            return distanceToEnemy * 1.5f - distanceToFinish;
         }
 
         return distanceToEnemy;
