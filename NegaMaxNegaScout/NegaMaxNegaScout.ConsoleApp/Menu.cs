@@ -10,6 +10,7 @@ public static class Menu
         Console.WriteLine("Please, choose algorithm: ");
         Console.WriteLine("Negamax(0)");
         Console.WriteLine("Negamax with alpha beta pruning(1)");
+        Console.WriteLine("Negascout(2)");
         var algorithmChoice = int.Parse(Console.ReadLine() ?? "0");
         FileReader.ReadGameFieldWithStartData(out var matrix, out var playerPosition, out var finishPosition,
             out var enemyPosition);
@@ -17,17 +18,18 @@ public static class Menu
         var minimaxService = new NegamaxService(matrix, finishPosition, pathFindingService);
         while (true)
         {
-            var nextPlayerPosition = algorithmChoice == 0
-                ? minimaxService.Negamax(new Position
-                {
-                    PlayerPosition = playerPosition,
-                    EnemyPosition = enemyPosition
-                }, 15, 1)
-                : minimaxService.NegamaxWithAlphaBetaPruning(new Position
-                {
-                    PlayerPosition = playerPosition,
-                    EnemyPosition = enemyPosition
-                }, 15, int.MinValue, int.MaxValue, 1);
+            var nextPlayerPosition = algorithmChoice switch
+            {
+                0 => minimaxService.Negamax(
+                    new Position { PlayerPosition = playerPosition, EnemyPosition = enemyPosition }, 15, 1),
+                1 => minimaxService.NegamaxWithAlphaBetaPruning(
+                    new Position { PlayerPosition = playerPosition, EnemyPosition = enemyPosition }, 15, int.MinValue,
+                    int.MaxValue, 1),
+                _ => minimaxService.NegaScout(
+                    new Position { PlayerPosition = playerPosition, EnemyPosition = enemyPosition }, 15, int.MinValue,
+                    int.MaxValue, 1)
+            };
+
             playerPosition = nextPlayerPosition.Item2.PlayerPosition;
             Console.Clear();
             ConsolePrinter.RenderGameFrame(matrix, playerPosition, enemyPosition, finishPosition);

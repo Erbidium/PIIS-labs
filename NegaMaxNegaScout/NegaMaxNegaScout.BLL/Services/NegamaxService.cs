@@ -16,6 +16,52 @@ public class NegamaxService
         _pathFindingService = pathFindingService;
     }
 
+    public (float, Position) NegaScout(Position position, int depth, float alpha, float beta,
+        int color)
+    {
+        var children = GenerateChildren(position, color);
+        if (depth == 0 || children.Count == 0)
+        {
+            return (position.Evaluation * color, position);
+        }
+
+        var maxEval = float.MinValue;
+        var best = children.First();
+        for (var i = 0; i < children.Count; i++)
+        {
+            (float, Position) eval;
+            if (i == 0)
+            {
+                eval = NegaScout(children[i], depth - 1, -beta, -alpha, -color);
+                eval.Item1 *= -1;
+            }
+            else
+            {
+                eval = NegaScout(children[i], depth - 1, -alpha - 1, -alpha, -color);
+                eval.Item1 *= -1;
+                if (alpha < eval.Item1 && eval.Item1 < beta)
+                {
+                    eval = NegaScout(children[i], depth - 1, -beta, -eval.Item1, -color);
+                    eval.Item1 *= -1;
+                }
+            }
+            
+            if (eval.Item1 > maxEval)
+            {
+                maxEval = eval.Item1;
+                best = children[i];
+            }
+
+            alpha = Math.Max(alpha, eval.Item1);
+            if (alpha >= beta)
+            {
+                break;
+            }
+        }
+
+        return (alpha, best);
+    }
+
     public (float, Position) NegamaxWithAlphaBetaPruning(Position position, int depth, float alpha, float beta,
         int color)
     {
