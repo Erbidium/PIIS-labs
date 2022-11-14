@@ -5,14 +5,10 @@ var text = Console.ReadLine();
 Console.WriteLine("Please, enter text to find: ");
 var textToFind = Console.ReadLine();
 
-var length = textToFind.Length;
-
-for (int i = 0; i <= text.Length - length; i++)
+if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(textToFind))
 {
-    if (KarpRabin.GetHash(textToFind) == KarpRabin.GetHash(text.Substring(i, length)))
-    {
-        Console.WriteLine("Find!");
-        break;
-    }
+    Console.WriteLine("Wrong entered input text");
+    return;
 }
+KarpRabin.GetIndexesOfFoundSubstring(text, textToFind);
 
