@@ -16,4 +16,14 @@ public static class Menu
         }
         KarpRabin.GetIndexesOfFoundSubstring(text, textToFind);
     }
+
+    public static void RunDjkstraAlgorithm()
+    {
+        
+    }
+
+    public static void RunPrimAlgorithm()
+    {
+        
+    }
 }
