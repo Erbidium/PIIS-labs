@@ -29,7 +29,10 @@ public static class Menu
         var shortestWays = Djkstra.GetShortestWays(adjacencyMatrix, startVertex);
         for(int i = 0; i < shortestWays.Length; i++)
         {
-            Console.WriteLine($"{shortestWays[i]} from vertex {startVertex} to vertex {i}");
+            if (shortestWays[i] < int.MaxValue && i != startVertex)
+            {
+                Console.WriteLine($"Path length: {shortestWays[i]} from vertex {startVertex} to vertex {i}");
+            }
         }
         Console.WriteLine();
     }
