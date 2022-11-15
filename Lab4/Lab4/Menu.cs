@@ -25,10 +25,11 @@ public static class Menu
     {
         var path = @"C:\Users\Acer\Documents\PIIS-labs\lab4Djkstra.txt";
         var adjacencyMatrix = FileReader.ReadAdjacencyMatrix(path);
-        var shortestWays = Djkstra.GetShortestWays(adjacencyMatrix, 2);
-        foreach (var distance in shortestWays)
+        var startVertex = 2;
+        var shortestWays = Djkstra.GetShortestWays(adjacencyMatrix, startVertex);
+        for(int i = 0; i < shortestWays.Length; i++)
         {
-            Console.Write($"{distance} ");
+            Console.WriteLine($"{shortestWays[i]} from vertex {startVertex} to vertex {i}");
         }
         Console.WriteLine();
     }
@@ -37,11 +38,16 @@ public static class Menu
     {
         var path = @"C:\Users\Acer\Documents\PIIS-labs\lab4Prim.txt";
         var adjacencyMatrix = FileReader.ReadAdjacencyMatrix(path);
-        var tree = Prim.Run(adjacencyMatrix);
-        foreach (var elem in tree)
+        var mst = Prim.Run(adjacencyMatrix);
+        var totalWeight = 0;
+        for (var i = 0; i < mst.Length; i++)
         {
-            Console.Write($"{elem} ");
+            if (mst[i] >= 0)
+            {
+                Console.WriteLine($"Edge: {mst[i] + 1} - {i + 1}\t Weight: {adjacencyMatrix[mst[i], i]}");
+                totalWeight += adjacencyMatrix[mst[i], i];
+            }
         }
-        Console.WriteLine();
+        Console.WriteLine($"Total MST weight: {totalWeight}");
     }
 }
