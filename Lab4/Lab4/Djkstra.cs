@@ -4,11 +4,11 @@ public static class Djkstra
 {
     public static int[] GetShortestWays(int[,] adjacencyMatrix, int start)
     {
-        var numberOfPoints = adjacencyMatrix.GetLength(0);
+        var verticesNumber = adjacencyMatrix.GetLength(0);
         var open = new PriorityQueue<int, int>();
-        var from = Enumerable.Repeat(-1, numberOfPoints).ToArray();
-        var distances = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
-        var isOpen = Enumerable.Repeat(true, numberOfPoints).ToArray();
+        var from = Enumerable.Repeat(-1, verticesNumber).ToArray();
+        var distances = Enumerable.Repeat(int.MaxValue, verticesNumber).ToArray();
+        var isOpen = Enumerable.Repeat(true, verticesNumber).ToArray();
         distances[start] = 0;
         open.Enqueue(start, 0);
         while (open.Count != 0)
@@ -18,7 +18,7 @@ public static class Djkstra
                 continue;
             isOpen[current] = false;
 
-            for (var i = 0; i < numberOfPoints; i++)
+            for (var i = 0; i < verticesNumber; i++)
             {
                 if (adjacencyMatrix[current, i] != 0 && isOpen[i] && distances[current] + adjacencyMatrix[current, i] < distances[i])
                 {
