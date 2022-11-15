@@ -14,7 +14,11 @@ public static class Menu
             Console.WriteLine("Wrong entered input text");
             return;
         }
-        KarpRabin.GetIndexesOfFoundSubstring(text, textToFind);
+        var indexes = KarpRabin.GetIndexesOfFoundSubstring(text, textToFind);
+        foreach (var index in indexes)
+        {
+            Console.WriteLine($"index: {index} value: {text.Substring(index, textToFind.Length)}");
+        }
     }
 
     public static void RunDjkstraAlgorithm()
