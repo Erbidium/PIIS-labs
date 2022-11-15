@@ -1,25 +1,24 @@
-﻿namespace Lab4;
+namespace Lab4;
 
 public static class Prim
 {
     public static int[] Run(int[,] adjacencyMatrix)
     {
-        var numberOfPoints = adjacencyMatrix.GetLength(0);
-        var parent = Enumerable.Repeat(-1, numberOfPoints).ToArray();
-        var distances = Enumerable.Repeat(int.MaxValue, numberOfPoints).ToArray();
-        distances[0] = 0;
-        var nodes = Enumerable.Range(0, numberOfPoints).ToList();
+        var verticesNumber = adjacencyMatrix.GetLength(0);
+        var parent = Enumerable.Repeat(-1, verticesNumber).ToArray();
+        var distances = new PriorityQueue<int, int>();
+        distances.Enqueue(0, 0);
+        var nodes = new HashSet<int>(Enumerable.Range(0, verticesNumber).ToList());
 
-        while (nodes.Count > 0)
+        while (distances.Count > 0)
         {
-            var current = nodes.MinBy(i => distances[i]);
+            var current = distances.Dequeue();
             nodes.Remove(current);
-            for (var i = 0; i < numberOfPoints; i++)
+            for (var i = 0; i < verticesNumber; i++)
             {
-                if (adjacencyMatrix[current, i] != 0 && nodes.Contains(i) &&
-                   adjacencyMatrix[current, i] < distances[i])
+                if (adjacencyMatrix[current, i] != 0 && nodes.Contains(i))
                 {
-                    distances[i] = adjacencyMatrix[current, i];
+                    distances.Enqueue(i, adjacencyMatrix[current, i]);
                     parent[i] = current;
                 }
             }
