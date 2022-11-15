@@ -1,11 +1,11 @@
-namespace PathfindingLab1.ConsoleApp;
+﻿namespace PathfindingLab1.ConsoleApp;
 
 public static class FileReader
 {
     public static void ReadGameFieldWithStartData(out int[,] fieldMatrix, out (int, int) startPlayerPoint,
         out (int, int) finishPoint, out (int, int) enemyPoint)
     {
-        var filePath = @"";
+        var filePath = @"C:\Users\Acer\Documents\PIIS-labs\PIIS-labs\MiniMaxLab2\MiniMaxLab2.ConsoleApp\hello.txt";
         var fileLines = File.ReadLines(filePath).ToList();
 
         startPlayerPoint = (int.Parse(fileLines[0][0].ToString()), int.Parse(fileLines[0][1].ToString()));

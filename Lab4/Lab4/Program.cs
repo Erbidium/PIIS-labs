@@ -18,6 +18,4 @@ if (int.TryParse(userInput, out var choice))
             break;
     }
 }
-    
-Menu.RunKarpRabinAlgorithm();
 

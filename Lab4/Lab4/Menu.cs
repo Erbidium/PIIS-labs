@@ -19,7 +19,14 @@ public static class Menu
 
     public static void RunDjkstraAlgorithm()
     {
-        
+        var path = @"C:\Users\Acer\Documents\PIIS-labs\lab4Djkstra.txt";
+        var adjacencyMatrix = FileReader.ReadAdjacencyMatrix(path);
+        var shortestWays = Djkstra.GetShortestWays(adjacencyMatrix, 2);
+        foreach (var distance in shortestWays)
+        {
+            Console.Write($"{distance} ");
+        }
+        Console.WriteLine();
     }
 
     public static void RunPrimAlgorithm()
