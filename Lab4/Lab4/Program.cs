@@ -2,7 +2,7 @@
 
 Console.WriteLine("(0) Rabin-Karp algorithm");
 Console.WriteLine("(1) Djkstra's algorithm");
-Console.WriteLine("(2) Rabin-Karp algorithm");
+Console.WriteLine("(2) Prim's algorithm");
 Console.WriteLine("Please, enter your choice");
 
 var userInput = Console.ReadLine();

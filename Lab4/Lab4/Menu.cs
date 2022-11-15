@@ -35,7 +35,13 @@ public static class Menu
 
     public static void RunPrimAlgorithm()
     {
-        var path = @"C:\Users\Acer\Documents\PIIS-labs\lab4Djkstra.txt";
+        var path = @"C:\Users\Acer\Documents\PIIS-labs\lab4Prim.txt";
         var adjacencyMatrix = FileReader.ReadAdjacencyMatrix(path);
+        var tree = Prim.Run(adjacencyMatrix);
+        foreach (var elem in tree)
+        {
+            Console.Write($"{elem} ");
+        }
+        Console.WriteLine();
     }
 }
