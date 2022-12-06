@@ -2,7 +2,7 @@
 
 public static class SimplexMethod
 {
-    public static /*(List<double>, double)*/void Run(double[,] simplexTable)
+    public static void Run(double[,] simplexTable)
     {
         var algorithmStop = false;
         while (!algorithmStop)
@@ -10,44 +10,41 @@ public static class SimplexMethod
             var freeVariablesToEnter = GetFreeVariableToEnterOrderedByCoefficientDescending(simplexTable);
             if (freeVariablesToEnter.Count == 0)
             {
-                algorithmStop = true;
                 break;
             }
 
             var variableToLeaveBasisWasFound = false;
             foreach (var variable in freeVariablesToEnter)
             {
-                Console.WriteLine($"Entering: {variable}");
+                Console.WriteLine($"Entering: X{variable+1}");
                 var rowNumber = GetRowOfVariableToLeaveBasis(simplexTable, variable);
-                if (rowNumber.HasValue)
+                
+                if (!rowNumber.HasValue) continue;
+
+                Console.WriteLine($"Leaving X{GetBasisVariableNumberByRow(simplexTable, rowNumber.Value) + 1}");
+                simplexTable.DivideRowByNumber(rowNumber.Value, simplexTable[rowNumber.Value, variable]);
+
+                for (var i = 0; i < simplexTable.GetLength(0); i++)
                 {
-                    Console.WriteLine($"Leaving {rowNumber}");
-                    simplexTable.DivideRowByNumber(rowNumber.Value, simplexTable[rowNumber.Value, variable]);
-                    Console.WriteLine("divided");
-                    ConsolePrinter.PrintMatrix(simplexTable);
-                    
-                    for (int i = 0; i < simplexTable.GetLength(0); i++)
+                    if (i == rowNumber.Value) continue;
+
+                    var multiplier = simplexTable[i, variable];
+                    for (var j = 0; j < simplexTable.GetLength(1); j++)
                     {
-                        if (i != rowNumber.Value)
-                        {
-                            var multiplier = simplexTable[i, variable];
-                            for (int j = 0; j < simplexTable.GetLength(1); j++)
-                            {
-                                simplexTable[i, j] -= multiplier * simplexTable[rowNumber.Value, j];
-                            }
-                        }
+                        simplexTable[i, j] -= multiplier * simplexTable[rowNumber.Value, j];
                     }
-                    Console.WriteLine("row operations");
-                    ConsolePrinter.PrintMatrix(simplexTable);
-                    variableToLeaveBasisWasFound = true;
-                    break;
                 }
+                Console.WriteLine("New simplex table");
+                ConsolePrinter.PrintMatrix(simplexTable);
+                variableToLeaveBasisWasFound = true;
+                break;
             }
             if (variableToLeaveBasisWasFound == false)
             {
                 algorithmStop = true;
             }
         }
+        ConsolePrinter.PrintAlgorithmResults(simplexTable);
     }
 
     public static List<int> GetFreeVariableToEnterOrderedByCoefficientDescending(double[,] simplexTable)
@@ -86,5 +83,32 @@ public static class SimplexMethod
         {
             matrix[rowNumber, i] /= value;
         }
+    }
+
+    public static int GetBasisVariableNumberByRow(this double[,] matrix, int rowNumber)
+    {
+        for (int j = 0; j < matrix.GetLength(1); j++)
+        {
+            var columnIsFound = true;
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                if (i != rowNumber && Math.Abs(matrix[i, j]) > 0.00001)
+                {
+                    columnIsFound = false;
+                }
+            }
+
+            if (Math.Abs(matrix[rowNumber, j] - 1) > 0.00001)
+            {
+                columnIsFound = false;
+            }
+
+            if (columnIsFound)
+            {
+                return j;
+            }
+        }
+
+        return -1;
     }
 }
