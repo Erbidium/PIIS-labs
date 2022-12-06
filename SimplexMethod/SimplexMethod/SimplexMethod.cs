@@ -27,9 +27,9 @@ public static class SimplexMethod
                     {
                         for (int j = 0; j < simplexTable.GetLength(1); j++)
                         {
-                            if (j != rowNumber.Value && simplexTable[i, j] > 0.0001)
+                            if (i != rowNumber.Value && simplexTable[i, j] > 0.0001)
                             {
-                                simplexTable[i, j] -= simplexTable[i, j] * simplexTable[rowNumber.Value, j];
+                                simplexTable[i, j] -= simplexTable[i, variable] * simplexTable[rowNumber.Value, j];
                             }
                         }
                     }
@@ -42,7 +42,7 @@ public static class SimplexMethod
             {
                 for (int j = 0; j < simplexTable.GetLength(1); j++)
                 {
-                    Console.Write($"{simplexTable[i, j] }".PadLeft(7));
+                    Console.Write($"{Math.Round(simplexTable[i, j], 3) }".PadLeft(7));
                 }
                 Console.WriteLine();
             }
@@ -66,20 +66,20 @@ public static class SimplexMethod
     public static int? GetRowOfVariableToLeaveBasis(double[,] simplexTable, int columnNumber)
     {
         return Enumerable.Range(1, simplexTable.GetLength(0) - 1)
-            .Select((rowNumber, index) =>
+            .Select((rowNumber) =>
             {
                 var coefficient = simplexTable[rowNumber, columnNumber];
                 var lastColumnValue = simplexTable[rowNumber, simplexTable.GetLength(1) - 1];
                 return (
                     coefficient,
                     lastColumnValue,
-                    variable: index,
+                    row: rowNumber,
                     ratioTest: coefficient != 0 ? lastColumnValue / coefficient : coefficient
                 );
             })
             .Where(tuple => tuple.coefficient > 0)
             .OrderBy(tuple => tuple.ratioTest)
-            .Select(tuple => tuple.variable)
+            .Select(tuple => tuple.row)
             .FirstOrDefault();
     }
 
