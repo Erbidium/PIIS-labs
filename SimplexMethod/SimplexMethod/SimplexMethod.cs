@@ -17,17 +17,19 @@ public static class SimplexMethod
             var variableToLeaveBasisWasFound = false;
             foreach (var variable in freeVariablesToEnter)
             {
-                var rowNumber = GetRowOfVariablesToLeaveBasis(simplexTable, variable);
+                Console.WriteLine($"Entering: {variable}");
+                var rowNumber = GetRowOfVariableToLeaveBasis(simplexTable, variable);
                 if (rowNumber.HasValue)
                 {
+                    Console.WriteLine($"Leaving {rowNumber}");
                     simplexTable.DivideRowByNumber(rowNumber.Value, simplexTable[rowNumber.Value, variable]);
                     for (int i = 0; i < simplexTable.GetLength(0); i++)
                     {
                         for (int j = 0; j < simplexTable.GetLength(1); j++)
                         {
-                            if (j != rowNumber.Value)
+                            if (j != rowNumber.Value && simplexTable[i, j] > 0.0001)
                             {
-                                simplexTable[i, j] -= simplexTable[rowNumber.Value, j] * simplexTable[i, variable];
+                                simplexTable[i, j] -= simplexTable[i, j] * simplexTable[rowNumber.Value, j];
                             }
                         }
                     }
@@ -61,9 +63,9 @@ public static class SimplexMethod
             .ToList();
     }
 
-    public static int? GetRowOfVariablesToLeaveBasis(double[,] simplexTable, int columnNumber)
+    public static int? GetRowOfVariableToLeaveBasis(double[,] simplexTable, int columnNumber)
     {
-        return Enumerable.Range(0, simplexTable.GetLength(0))
+        return Enumerable.Range(1, simplexTable.GetLength(0) - 1)
             .Select((rowNumber, index) =>
             {
                 var coefficient = simplexTable[rowNumber, columnNumber];
@@ -72,7 +74,7 @@ public static class SimplexMethod
                     coefficient,
                     lastColumnValue,
                     variable: index,
-                    ratioTest: lastColumnValue / coefficient
+                    ratioTest: coefficient != 0 ? lastColumnValue / coefficient : coefficient
                 );
             })
             .Where(tuple => tuple.coefficient > 0)
