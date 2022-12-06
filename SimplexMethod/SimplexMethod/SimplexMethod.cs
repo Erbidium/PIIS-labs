@@ -2,7 +2,7 @@
 
 public static class SimplexMethod
 {
-    public static (List<double>, double) Run(double[,] simplexTable)
+    public static /*(List<double>, double)*/void Run(double[,] simplexTable)
     {
         var algorithmStop = false;
         while (!algorithmStop)
@@ -21,11 +21,29 @@ public static class SimplexMethod
                 if (rowNumber.HasValue)
                 {
                     simplexTable.DivideRowByNumber(rowNumber.Value, simplexTable[rowNumber.Value, variable]);
+                    for (int i = 0; i < simplexTable.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < simplexTable.GetLength(1); j++)
+                        {
+                            if (j != rowNumber.Value)
+                            {
+                                simplexTable[i, j] -= simplexTable[rowNumber.Value, j] * simplexTable[i, variable];
+                            }
+                        }
+                    }
                     variableToLeaveBasisWasFound = true;
                     break;
                 }
             }
-
+            Console.WriteLine();
+            for (int i = 0; i < simplexTable.GetLength(0); i++)
+            {
+                for (int j = 0; j < simplexTable.GetLength(1); j++)
+                {
+                    Console.Write($"{simplexTable[i, j] }".PadLeft(7));
+                }
+                Console.WriteLine();
+            }
             if (variableToLeaveBasisWasFound == false)
             {
                 algorithmStop = true;
@@ -45,7 +63,7 @@ public static class SimplexMethod
 
     public static int? GetRowOfVariablesToLeaveBasis(double[,] simplexTable, int columnNumber)
     {
-        return Enumerable.Range(0, simplexTable.GetLength(1))
+        return Enumerable.Range(0, simplexTable.GetLength(0))
             .Select((rowNumber, index) =>
             {
                 var coefficient = simplexTable[rowNumber, columnNumber];
