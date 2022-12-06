@@ -23,31 +23,25 @@ public static class SimplexMethod
                 {
                     Console.WriteLine($"Leaving {rowNumber}");
                     simplexTable.DivideRowByNumber(rowNumber.Value, simplexTable[rowNumber.Value, variable]);
+                    Console.WriteLine("divided");
+                    PrintMatrix(simplexTable);
+                    
                     for (int i = 0; i < simplexTable.GetLength(0); i++)
                     {
                         if (i != rowNumber.Value)
                         {
+                            var multiplier = simplexTable[i, variable];
                             for (int j = 0; j < simplexTable.GetLength(1); j++)
                             {
-                                if (Math.Abs(simplexTable[i, j]) > 0.0001)
-                                {
-                                    simplexTable[i, j] -= simplexTable[i, variable] * simplexTable[rowNumber.Value, j];
-                                }
+                                simplexTable[i, j] -= multiplier * simplexTable[rowNumber.Value, j];
                             }
                         }
                     }
+                    Console.WriteLine("row operations");
+                    PrintMatrix(simplexTable);
                     variableToLeaveBasisWasFound = true;
                     break;
                 }
-            }
-            Console.WriteLine();
-            for (int i = 0; i < simplexTable.GetLength(0); i++)
-            {
-                for (int j = 0; j < simplexTable.GetLength(1); j++)
-                {
-                    Console.Write($"{Math.Round(simplexTable[i, j], 3) }".PadLeft(7));
-                }
-                Console.WriteLine();
             }
             if (variableToLeaveBasisWasFound == false)
             {
@@ -91,6 +85,18 @@ public static class SimplexMethod
         for(int i = 0; i < matrix.GetLength(1); i++)
         {
             matrix[rowNumber, i] /= value;
+        }
+    }
+
+    public static void PrintMatrix(double[,] simplexTable)
+    {
+        for (int i = 0; i < simplexTable.GetLength(0); i++)
+        {
+            for (int j = 0; j < simplexTable.GetLength(1); j++)
+            {
+                Console.Write($"{Math.Round(simplexTable[i, j], 3) }".PadLeft(7));
+            }
+            Console.WriteLine();
         }
     }
 }
