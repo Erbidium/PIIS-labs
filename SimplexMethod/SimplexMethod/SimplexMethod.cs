@@ -25,11 +25,14 @@ public static class SimplexMethod
                     simplexTable.DivideRowByNumber(rowNumber.Value, simplexTable[rowNumber.Value, variable]);
                     for (int i = 0; i < simplexTable.GetLength(0); i++)
                     {
-                        for (int j = 0; j < simplexTable.GetLength(1); j++)
+                        if (i != rowNumber.Value)
                         {
-                            if (i != rowNumber.Value && simplexTable[i, j] > 0.0001)
+                            for (int j = 0; j < simplexTable.GetLength(1); j++)
                             {
-                                simplexTable[i, j] -= simplexTable[i, variable] * simplexTable[rowNumber.Value, j];
+                                if (Math.Abs(simplexTable[i, j]) > 0.0001)
+                                {
+                                    simplexTable[i, j] -= simplexTable[i, variable] * simplexTable[rowNumber.Value, j];
+                                }
                             }
                         }
                     }
