@@ -62,7 +62,7 @@ public static class SimplexMethod
 
     public static int? GetRowOfVariableToLeaveBasis(double[,] simplexTable, int columnNumber)
     {
-        return Enumerable.Range(1, simplexTable.GetLength(0) - 1)
+        var rows = Enumerable.Range(1, simplexTable.GetLength(0) - 1)
             .Select((rowNumber) =>
             {
                 var coefficient = simplexTable[rowNumber, columnNumber];
@@ -76,8 +76,8 @@ public static class SimplexMethod
             })
             .Where(tuple => tuple.coefficient > 0)
             .OrderBy(tuple => tuple.ratioTest)
-            .Select(tuple => tuple.row)
-            .FirstOrDefault();
+            .Select(tuple => tuple.row).ToList();
+        return rows.Count > 0 ? rows[0] : null;
     }
 
     public static void DivideRowByNumber(this double[,] matrix, int rowNumber, double value)
