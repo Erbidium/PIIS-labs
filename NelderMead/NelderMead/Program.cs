@@ -1,3 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using NelderMead;
 
-Console.WriteLine("Hello, World!");
+var startingPoint = (x1: 3, x2: 3, x3: 2);
+NelderMeadMethod.Run(startingPoint);
