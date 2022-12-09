@@ -53,11 +53,19 @@ public static class NelderMeadMethod
             if (ObjectiveFunction(mappedPoint) <= minFunctionValue)
             {
                 var stretchResult = center + (GammaUpperBound - GammaLowerBound) / 2.0 * (mappedPoint - center);
+                matrixD.SetRow(indexOfMax,
+                    ObjectiveFunction(stretchResult) <= minFunctionValue ? stretchResult : mappedPoint);
+                continue;
             }
-            else
+
+            if (ObjectiveFunction(mappedPoint) <= maxFunctionsValue)
             {
-                
+                var compressionResult =
+                    center + (BetaUpperBound - BetaLowerBound) / 2 * (matrixD.Row(indexOfMax) - center);
+                matrixD.SetRow(indexOfMax, compressionResult);
+                continue;
             }
+            
         }
     }
 
