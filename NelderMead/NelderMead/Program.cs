@@ -1,6 +1,6 @@
 ﻿using NelderMead;
 
-const int distanceBetweenTwoPoints = 1;
+const double distanceBetweenTwoPoints = 1;
 const double precision = 0.01;
 const int iterationsNumber = 500;
 
