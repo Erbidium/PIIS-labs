@@ -19,7 +19,7 @@ public static class NelderMeadMethod
 
     public static void Run((double x1, double x2, double x3) startingPoint, double distanceBetweenTwoPoints, double precision, int iterationsNumber)
     {
-        var matrixD = Matrix<double>.Build.Dense(3, 4);
+        var matrixD = Matrix<double>.Build.Dense(N + 1, N);
         matrixD.SetRow(0, new[] { startingPoint.x1, startingPoint.x2, startingPoint.x3 });
         for (var i = 1; i < N + 1; i++)
         {
@@ -65,7 +65,9 @@ public static class NelderMeadMethod
                 matrixD.SetRow(indexOfMax, compressionResult);
                 continue;
             }
-            
+
+            var minRow = matrixD.Row(indexOfMin);
+            matrixD = Matrix<double>.Build.DenseOfRows(matrixD.EnumerateRows().Select(row => minRow + 0.5 * (row - minRow)));
         }
     }
 
