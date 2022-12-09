@@ -67,7 +67,7 @@ public static class NelderMeadMethod
             }
 
             var minRow = matrixD.Row(indexOfMin);
-            matrixD = Matrix<double>.Build.DenseOfRows(matrixD.EnumerateRows().Select(row => minRow + 0.5 * (row - minRow)));
+            matrixD.SetSubMatrix(0, 0,Matrix<double>.Build.DenseOfRows(matrixD.EnumerateRows().Select(row => minRow + 0.5 * (row - minRow))));
         }
     }
 
