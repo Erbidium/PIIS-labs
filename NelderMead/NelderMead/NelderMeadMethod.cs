@@ -1,4 +1,6 @@
-﻿namespace NelderMead;
+﻿using MathNet.Numerics.LinearAlgebra;
+
+namespace NelderMead;
 
 public static class NelderMeadMethod
 {
@@ -9,24 +11,52 @@ public static class NelderMeadMethod
     private const double BetaUpperBound = 0.6;
     private const int N = 3;
 
-    public static int ObjectiveFunction((int x1, int x2, int x3) point)
-        => -5 * point.x1 * (int)Math.Pow(point.x2, 2) * point.x3
-           + 2 * (int)Math.Pow(point.x1, 2) * point.x2
-           - 3 * point.x1 * (int)Math.Pow(point.x2, 4)
-           + point.x1 * (int)Math.Pow(point.x3, 2);
+    private static double ObjectiveFunction(IList<double> point)
+        => -5 * point[0] * Math.Pow(point[1], 2) * point[2]
+           + 2 * Math.Pow(point[0], 2) * point[1]
+           - 3 * point[0] * Math.Pow(point[1], 4)
+           + point[0] * Math.Pow(point[2], 2);
 
     public static void Run((double x1, double x2, double x3) startingPoint, double distanceBetweenTwoPoints, double precision, int iterationsNumber)
     {
-        var matrixD = new double[N + 1][];
-        matrixD[0] = new [] { startingPoint.x1, startingPoint.x2, startingPoint.x3 };
+        var matrixD = Matrix<double>.Build.Dense(3, 4);
+        matrixD.SetRow(0, new[] { startingPoint.x1, startingPoint.x2, startingPoint.x3 });
         for (var i = 1; i < N + 1; i++)
         {
-            matrixD[i] = new double[N];
             for (var j = 0; j < N; j++)
             {
-                matrixD[i][j] = matrixD[0][j] + (j == i - 1
+                matrixD[i, j] = matrixD[0, j] + (j == i - 1
                     ? D1(distanceBetweenTwoPoints)
                     : D2(distanceBetweenTwoPoints));
+            }
+        }
+
+        for (var i = 0; i < iterationsNumber; i++)
+        {
+            var functionValues =
+                matrixD.EnumerateRows().Select(ObjectiveFunction)
+                    .ToList();
+
+            var maxFunctionsValue = functionValues.Max();
+            var minFunctionValue = functionValues.Min();
+            var indexOfMax = functionValues.IndexOf(maxFunctionsValue);
+            var indexOfMin = functionValues.IndexOf(minFunctionValue);
+            var center = (matrixD.ReduceRows((row1, row2) => row1 + row2) - matrixD.Row(indexOfMax)) / N;
+
+            if (Math.Sqrt(functionValues.Sum() / (N + 1) - ObjectiveFunction(center)) <=
+                precision)
+            {
+                break;
+            }
+
+            var mappedPoint = center + Alpha * (center - matrixD.Row(indexOfMax));
+            if (ObjectiveFunction(mappedPoint) <= minFunctionValue)
+            {
+                var stretchResult = center + (GammaUpperBound - GammaLowerBound) / 2.0 * (mappedPoint - center);
+            }
+            else
+            {
+                
             }
         }
     }
