@@ -17,10 +17,10 @@ public static class NelderMeadMethod
            - 3 * point[0] * Math.Pow(point[1], 4)
            + point[0] * Math.Pow(point[2], 2);
 
-    public static void Run((double x1, double x2, double x3) startingPoint, double distanceBetweenTwoPoints, double precision, int iterationsNumber)
+    public static void Run(Vector<double> startingPoint, double distanceBetweenTwoPoints, double precision, int iterationsNumber)
     {
         var matrixD = Matrix<double>.Build.Dense(N + 1, N);
-        matrixD.SetRow(0, new[] { startingPoint.x1, startingPoint.x2, startingPoint.x3 });
+        matrixD.SetRow(0, startingPoint);
         for (var i = 1; i < N + 1; i++)
         {
             for (var j = 0; j < N; j++)
