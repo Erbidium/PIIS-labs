@@ -19,52 +19,52 @@ public static class NelderMeadMethod
 
     public static void Run(Vector<double> startingPoint, double distanceBetweenTwoPoints, double precision, int iterationsNumber)
     {
-        var matrixD = Matrix<double>.Build.Dense(N + 1, N);
-        matrixD.SetRow(0, startingPoint);
-        matrixD.MapIndexedInplace(
-            (i, j, value) => matrixD[0, j] + 
+        var simplex = Matrix<double>.Build.Dense(N + 1, N);
+        simplex.SetRow(0, startingPoint);
+        simplex.MapIndexedInplace(
+            (i, j, value) => simplex[0, j] + 
                              (j == i - 1 
                                  ? D1(distanceBetweenTwoPoints) 
                                  : D2(distanceBetweenTwoPoints)), 
             Zeros.Include);
-
         for (var i = 0; i < iterationsNumber; i++)
         {
             var functionValues =
-                matrixD.EnumerateRows().Select(ObjectiveFunction)
+                simplex.EnumerateRows().Select(ObjectiveFunction)
                     .ToList();
 
             var maxFunctionsValue = functionValues.Max();
+            Console.WriteLine(maxFunctionsValue);
             var minFunctionValue = functionValues.Min();
             var indexOfMax = functionValues.IndexOf(maxFunctionsValue);
             var indexOfMin = functionValues.IndexOf(minFunctionValue);
-            var center = (matrixD.ReduceRows((row1, row2) => row1 + row2) - matrixD.Row(indexOfMax)) / N;
+            var centerOfGravity = (simplex.ReduceRows((row1, row2) => row1 + row2) - simplex.Row(indexOfMax)) / N;
 
-            if (Math.Sqrt(functionValues.Sum() / (N + 1) - ObjectiveFunction(center)) <=
+            if (Math.Sqrt(functionValues.Sum() / (N + 1) - ObjectiveFunction(centerOfGravity)) <=
                 precision)
             {
                 break;
             }
 
-            var mappedPoint = center + Alpha * (center - matrixD.Row(indexOfMax));
-            if (ObjectiveFunction(mappedPoint) <= minFunctionValue)
+            var reflectedPoint = centerOfGravity + Alpha * (centerOfGravity - simplex.Row(indexOfMax));
+            if (ObjectiveFunction(reflectedPoint) <= minFunctionValue)
             {
-                var stretchResult = center + (GammaUpperBound - GammaLowerBound) / 2.0 * (mappedPoint - center);
-                matrixD.SetRow(indexOfMax,
-                    ObjectiveFunction(stretchResult) <= minFunctionValue ? stretchResult : mappedPoint);
+                var expandedPoint = centerOfGravity + (GammaUpperBound - GammaLowerBound) / 2.0 * (reflectedPoint - centerOfGravity);
+                simplex.SetRow(indexOfMax,
+                    ObjectiveFunction(expandedPoint) <= minFunctionValue ? expandedPoint : reflectedPoint);
                 continue;
             }
 
-            if (ObjectiveFunction(mappedPoint) <= maxFunctionsValue)
+            if (ObjectiveFunction(reflectedPoint) <= maxFunctionsValue)
             {
-                var compressionResult =
-                    center + (BetaUpperBound - BetaLowerBound) / 2 * (matrixD.Row(indexOfMax) - center);
-                matrixD.SetRow(indexOfMax, compressionResult);
+                var contractedPoint =
+                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (simplex.Row(indexOfMax) - centerOfGravity);
+                simplex.SetRow(indexOfMax, contractedPoint);
                 continue;
             }
 
-            var minRow = matrixD.Row(indexOfMin);
-            matrixD.SetSubMatrix(0, 0,Matrix<double>.Build.DenseOfRows(matrixD.EnumerateRows().Select(row => minRow + 0.5 * (row - minRow))));
+            var minRow = simplex.Row(indexOfMin);
+            simplex.SetSubMatrix(0, 0,Matrix<double>.Build.DenseOfRows(simplex.EnumerateRows().Select(row => minRow + 0.5 * (row - minRow))));
         }
     }
 
