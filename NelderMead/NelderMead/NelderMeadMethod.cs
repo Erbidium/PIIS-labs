@@ -21,15 +21,12 @@ public static class NelderMeadMethod
     {
         var matrixD = Matrix<double>.Build.Dense(N + 1, N);
         matrixD.SetRow(0, startingPoint);
-        for (var i = 1; i < N + 1; i++)
-        {
-            for (var j = 0; j < N; j++)
-            {
-                matrixD[i, j] = matrixD[0, j] + (j == i - 1
-                    ? D1(distanceBetweenTwoPoints)
-                    : D2(distanceBetweenTwoPoints));
-            }
-        }
+        matrixD.MapIndexedInplace(
+            (i, j, value) => matrixD[0, j] + 
+                             (j == i - 1 
+                                 ? D1(distanceBetweenTwoPoints) 
+                                 : D2(distanceBetweenTwoPoints)), 
+            Zeros.Include);
 
         for (var i = 0; i < iterationsNumber; i++)
         {
