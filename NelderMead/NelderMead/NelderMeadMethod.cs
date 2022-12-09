@@ -14,7 +14,7 @@ public static class NelderMeadMethod
            - 3 * point.x1 * (int)Math.Pow(point.x2, 4)
            + point.x1 * (int)Math.Pow(point.x3, 2);
 
-    public static void Run((int x1, int x2, int x3) startingPoint)
+    public static void Run((int x1, int x2, int x3) startingPoint, int distanceBetweenTwoPoints, double precision, int iterationsNumber)
     {
         
         
