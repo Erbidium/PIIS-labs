@@ -11,7 +11,7 @@ public static class NelderMeadMethod
     private const double BetaUpperBound = 0.6;
     private const int N = 3;
 
-    private static double ObjectiveFunction(IList<double> point)
+    public static double ObjectiveFunction(IList<double> point)
         => -5 * point[0] * Math.Pow(point[1], 2) * point[2]
            + 2 * Math.Pow(point[0], 2) * point[1]
            - 3 * point[0] * Math.Pow(point[1], 4)
@@ -29,12 +29,12 @@ public static class NelderMeadMethod
             Zeros.Include);
         for (var i = 0; i < iterationsNumber; i++)
         {
+            ConsolePrinter.PrintAlgorithmResult(simplex, i);
             var functionValues =
                 simplex.EnumerateRows().Select(ObjectiveFunction)
                     .ToList();
 
             var maxFunctionsValue = functionValues.Max();
-            Console.WriteLine(maxFunctionsValue);
             var minFunctionValue = functionValues.Min();
             var indexOfMax = functionValues.IndexOf(maxFunctionsValue);
             var indexOfMin = functionValues.IndexOf(minFunctionValue);
