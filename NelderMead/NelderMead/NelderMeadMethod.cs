@@ -31,13 +31,16 @@ public static class NelderMeadMethod
         {
             ConsolePrinter.PrintAlgorithmResult(simplex, i);
             var functionValues =
-                simplex.EnumerateRows().Select(ObjectiveFunction)
-                    .ToList();
+                simplex.EnumerateRows()
+                    .Select(ObjectiveFunction).ToList();
+                var ordererFunctionValues = functionValues.OrderBy(f => f).ToList();
 
-            var maxFunctionsValue = functionValues.Max();
-            var minFunctionValue = functionValues.Min();
+            var maxFunctionsValue = ordererFunctionValues[^1];
+            var secondWorstFunctionValue = ordererFunctionValues[^2];
+            var minFunctionValue = functionValues[0];
             var indexOfMax = functionValues.IndexOf(maxFunctionsValue);
             var indexOfMin = functionValues.IndexOf(minFunctionValue);
+
             var centerOfGravity = (simplex.ReduceRows((row1, row2) => row1 + row2) - simplex.Row(indexOfMax)) / N;
 
             if (Math.Sqrt(functionValues.Sum() / (N + 1) - ObjectiveFunction(centerOfGravity)) <=
@@ -47,6 +50,12 @@ public static class NelderMeadMethod
             }
 
             var reflectedPoint = centerOfGravity + Alpha * (centerOfGravity - simplex.Row(indexOfMax));
+            if (ObjectiveFunction(reflectedPoint) <= secondWorstFunctionValue &&
+                ObjectiveFunction(reflectedPoint) >= minFunctionValue)
+            {
+                simplex.SetRow(indexOfMax, reflectedPoint);
+                continue;
+            }
             if (ObjectiveFunction(reflectedPoint) <= minFunctionValue)
             {
                 var expandedPoint = centerOfGravity + (GammaUpperBound - GammaLowerBound) / 2.0 * (reflectedPoint - centerOfGravity);
@@ -58,13 +67,31 @@ public static class NelderMeadMethod
             if (ObjectiveFunction(reflectedPoint) <= maxFunctionsValue)
             {
                 var contractedPoint =
-                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (simplex.Row(indexOfMax) - centerOfGravity);
-                simplex.SetRow(indexOfMax, contractedPoint);
-                continue;
+                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (reflectedPoint - centerOfGravity);
+                if (ObjectiveFunction(contractedPoint) <= ObjectiveFunction(reflectedPoint))
+                {
+                    simplex.SetRow(indexOfMax, contractedPoint);
+                    continue;
+                }
             }
-
+            else
+            {
+                var contractedPoint =
+                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (simplex.Row(indexOfMax) - centerOfGravity);
+                if (ObjectiveFunction(contractedPoint) <= maxFunctionsValue)
+                {
+                    simplex.SetRow(indexOfMax, contractedPoint);
+                    continue;
+                }
+            }
             var minRow = simplex.Row(indexOfMin);
-            simplex.SetSubMatrix(0, 0,Matrix<double>.Build.DenseOfRows(simplex.EnumerateRows().Select(row => minRow + 0.5 * (row - minRow))));
+            for (var j = 0; j < simplex.RowCount; j++)
+            {
+                if (j == indexOfMin) continue;
+
+                var currentRow = simplex.Row(j);
+                simplex.SetRow(j, minRow + 0.5 * (currentRow - minRow));
+            }
         }
     }
 

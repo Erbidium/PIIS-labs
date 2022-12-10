@@ -7,7 +7,7 @@ public static class ConsolePrinter
     public static void PrintAlgorithmResult(Matrix<double> simplex, int iterationNumber)
     {
         Console.Write(string.Join("", Enumerable.Repeat("-", Console.WindowWidth)));
-        Console.WriteLine($"Iterateion number: {iterationNumber}");
+        Console.WriteLine($"Iteration number: {iterationNumber}");
         Console.WriteLine("Simplex");
         foreach (var point in simplex.EnumerateRows())
         {
