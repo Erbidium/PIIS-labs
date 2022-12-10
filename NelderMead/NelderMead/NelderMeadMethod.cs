@@ -36,13 +36,13 @@ public static class NelderMeadMethod
                     .Select(ObjectiveFunction).ToList();
                 var ordererFunctionValues = functionValues.OrderBy(f => f).ToList();
 
-            var maxFunctionsValue = ordererFunctionValues[^1];
+            var worstFunctionValue = ordererFunctionValues[^1];
             var secondWorstFunctionValue = ordererFunctionValues[^2];
-            var minFunctionValue = functionValues[0];
-            var indexOfMax = functionValues.IndexOf(maxFunctionsValue);
-            var indexOfMin = functionValues.IndexOf(minFunctionValue);
+            var bestFunctionValue = functionValues[0];
+            var indexOfWorst = functionValues.IndexOf(worstFunctionValue);
+            var indexOfBest = functionValues.IndexOf(bestFunctionValue);
 
-            var centerOfGravity = (simplex.ReduceRows((row1, row2) => row1 + row2) - simplex.Row(indexOfMax)) / N;
+            var centerOfGravity = (simplex.ReduceRows((row1, row2) => row1 + row2) - simplex.Row(indexOfWorst)) / N;
 
             if (Math.Sqrt(functionValues.Sum() / (N + 1) - ObjectiveFunction(centerOfGravity)) <=
                 precision)
@@ -50,48 +50,48 @@ public static class NelderMeadMethod
                 break;
             }
 
-            var reflectedPoint = centerOfGravity + Alpha * (centerOfGravity - simplex.Row(indexOfMax));
+            var reflectedPoint = centerOfGravity + Alpha * (centerOfGravity - simplex.Row(indexOfWorst));
             if (ObjectiveFunction(reflectedPoint) <= secondWorstFunctionValue &&
-                ObjectiveFunction(reflectedPoint) >= minFunctionValue)
+                ObjectiveFunction(reflectedPoint) >= bestFunctionValue)
             {
-                simplex.SetRow(indexOfMax, reflectedPoint);
+                simplex.SetRow(indexOfWorst, reflectedPoint);
                 continue;
             }
-            if (ObjectiveFunction(reflectedPoint) <= minFunctionValue)
+            if (ObjectiveFunction(reflectedPoint) <= bestFunctionValue)
             {
                 var expandedPoint = centerOfGravity + (GammaUpperBound - GammaLowerBound) / 2.0 * (reflectedPoint - centerOfGravity);
-                simplex.SetRow(indexOfMax,
-                    ObjectiveFunction(expandedPoint) <= minFunctionValue ? expandedPoint : reflectedPoint);
+                simplex.SetRow(indexOfWorst,
+                    ObjectiveFunction(expandedPoint) <= bestFunctionValue ? expandedPoint : reflectedPoint);
                 continue;
             }
 
-            if (ObjectiveFunction(reflectedPoint) <= maxFunctionsValue)
+            if (ObjectiveFunction(reflectedPoint) <= worstFunctionValue)
             {
                 var contractedPoint =
                     centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (reflectedPoint - centerOfGravity);
                 if (ObjectiveFunction(contractedPoint) <= ObjectiveFunction(reflectedPoint))
                 {
-                    simplex.SetRow(indexOfMax, contractedPoint);
+                    simplex.SetRow(indexOfWorst, contractedPoint);
                     continue;
                 }
             }
             else
             {
                 var contractedPoint =
-                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (simplex.Row(indexOfMax) - centerOfGravity);
-                if (ObjectiveFunction(contractedPoint) <= maxFunctionsValue)
+                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (simplex.Row(indexOfWorst) - centerOfGravity);
+                if (ObjectiveFunction(contractedPoint) <= worstFunctionValue)
                 {
-                    simplex.SetRow(indexOfMax, contractedPoint);
+                    simplex.SetRow(indexOfWorst, contractedPoint);
                     continue;
                 }
             }
-            var minRow = simplex.Row(indexOfMin);
+            var bestRow = simplex.Row(indexOfBest);
             for (var j = 0; j < simplex.RowCount; j++)
             {
-                if (j == indexOfMin) continue;
+                if (j == indexOfBest) continue;
 
                 var currentRow = simplex.Row(j);
-                simplex.SetRow(j, minRow + 0.5 * (currentRow - minRow));
+                simplex.SetRow(j, bestRow + 0.5 * (currentRow - bestRow));
             }
         }
     }
