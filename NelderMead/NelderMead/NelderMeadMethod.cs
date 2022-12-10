@@ -22,10 +22,11 @@ public static class NelderMeadMethod
         var simplex = Matrix<double>.Build.Dense(N + 1, N);
         simplex.SetRow(0, startingPoint);
         simplex.MapIndexedInplace(
-            (i, j, value) => simplex[0, j] + 
-                             (j == i - 1 
-                                 ? D1(distanceBetweenTwoPoints) 
-                                 : D2(distanceBetweenTwoPoints)), 
+            (i, j, value) => i == 0 
+                ? value 
+                : simplex[0, j] + (j == i - 1 
+                    ? D1(distanceBetweenTwoPoints) 
+                    : D2(distanceBetweenTwoPoints)), 
             Zeros.Include);
         for (var i = 0; i < iterationsNumber; i++)
         {
