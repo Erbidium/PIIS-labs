@@ -49,6 +49,7 @@ public static class ConsolePrinter
         {
             Console.WriteLine($"{text} = {functionValue}");
             Console.WriteLine($"Point index: {indexOfFunctionValue}");
+            Console.WriteLine();
             return true;
         }
 
