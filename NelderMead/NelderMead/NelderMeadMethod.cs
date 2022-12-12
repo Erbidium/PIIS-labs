@@ -30,7 +30,10 @@ public static class NelderMeadMethod
             Zeros.Include);
         for (var i = 0; i < iterationsNumber; i++)
         {
-            ConsolePrinter.PrintAlgorithmResult(simplex, i);
+            if (!ConsolePrinter.PrintAlgorithmResult(simplex, i))
+            {
+                return;
+            }
             var functionValues =
                 simplex.EnumerateRows()
                     .Select(ObjectiveFunction).ToList();
@@ -60,7 +63,7 @@ public static class NelderMeadMethod
             }
             if (ObjectiveFunction(reflectedPoint) <= bestFunctionValue)
             {
-                var expandedPoint = centerOfGravity + (GammaUpperBound - GammaLowerBound) / 2.0 * (reflectedPoint - centerOfGravity);
+                var expandedPoint = centerOfGravity + (GammaUpperBound + GammaLowerBound) / 2.0 * (reflectedPoint - centerOfGravity);
                 simplex.SetRow(indexOfWorst,
                     ObjectiveFunction(expandedPoint) <= bestFunctionValue ? expandedPoint : reflectedPoint);
                 continue;

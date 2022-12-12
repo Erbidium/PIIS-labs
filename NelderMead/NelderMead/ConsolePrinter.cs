@@ -1,10 +1,11 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace NelderMead;
 
 public static class ConsolePrinter
 {
-    public static void PrintAlgorithmResult(Matrix<double> simplex, int iterationNumber)
+    public static bool PrintAlgorithmResult(Matrix<double> simplex, int iterationNumber)
     {
         Console.Write(string.Join("", Enumerable.Repeat("-", Console.WindowWidth)));
         Console.WriteLine($"Iteration number: {iterationNumber}");
@@ -28,12 +29,31 @@ public static class ConsolePrinter
         var minFunctionValue = functionValues.Min();
         var indexOfMax = functionValues.IndexOf(maxFunctionsValue);
         var indexOfMin = functionValues.IndexOf(minFunctionValue);
-        Console.WriteLine($"Fmax = {maxFunctionsValue}");
-        Console.WriteLine($"Point index: {indexOfMax}");
+        if (!PrintValueAndIndexOrInfinity(maxFunctionsValue, indexOfMax, "Fmax"))
+        {
+            return false;
+        }
+
+        if (!PrintValueAndIndexOrInfinity(minFunctionValue, indexOfMin, "Fmin"))
+        {
+            return false;
+        }
         Console.WriteLine();
-        Console.WriteLine($"Fmin = {minFunctionValue}");
-        Console.WriteLine($"Point index: {indexOfMin}");
         Console.WriteLine();
+        return true;
+    }
+
+    private static bool PrintValueAndIndexOrInfinity(double functionValue, double indexOfFunctionValue, string text)
+    {
+        if (functionValue.IsFinite())
+        {
+            Console.WriteLine($"{text} = {functionValue}");
+            Console.WriteLine($"Point index: {indexOfFunctionValue}");
+            return true;
+        }
+
+        Console.WriteLine($"{text} = {(double.IsPositiveInfinity(functionValue) ? "+" : "-")}INF");
         Console.WriteLine();
+        return false;
     }
 }
