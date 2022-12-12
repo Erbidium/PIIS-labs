@@ -44,8 +44,9 @@ public static class NelderMeadMethod
 
             var centerOfGravity = (simplex.ReduceRows((row1, row2) => row1 + row2) - simplex.Row(indexOfWorst)) / N;
 
-            if (Math.Sqrt(functionValues.Sum() / (N + 1) - ObjectiveFunction(centerOfGravity)) <=
-                precision)
+            if (Math.Sqrt(functionValues
+                    .Select(functionValue => Math.Pow(functionValue - ObjectiveFunction(centerOfGravity), 2))
+                    .Sum() / (N + 1) ) <= precision) 
             {
                 break;
             }
