@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace NelderMead;
 
@@ -72,7 +72,7 @@ public static class NelderMeadMethod
             if (ObjectiveFunction(reflectedPoint) <= worstFunctionValue)
             {
                 var contractedPoint =
-                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (reflectedPoint - centerOfGravity);
+                    centerOfGravity + (BetaUpperBound + BetaLowerBound) / 2 * (reflectedPoint - centerOfGravity);
                 if (ObjectiveFunction(contractedPoint) <= ObjectiveFunction(reflectedPoint))
                 {
                     simplex.SetRow(indexOfWorst, contractedPoint);
@@ -82,7 +82,7 @@ public static class NelderMeadMethod
             else
             {
                 var contractedPoint =
-                    centerOfGravity + (BetaUpperBound - BetaLowerBound) / 2 * (simplex.Row(indexOfWorst) - centerOfGravity);
+                    centerOfGravity + (BetaUpperBound + BetaLowerBound) / 2 * (simplex.Row(indexOfWorst) - centerOfGravity);
                 if (ObjectiveFunction(contractedPoint) <= worstFunctionValue)
                 {
                     simplex.SetRow(indexOfWorst, contractedPoint);
